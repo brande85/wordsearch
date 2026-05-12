@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word Search</title>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --cream:#f7f3eb;--cream2:#ede8dc;--cream3:#d4ccbf;
+      --ink:#3b3228;--ink2:#6b5f52;--ink3:#9c8f82;
+      --sage:#7a9e7e;--sage-light:#c8deca;--sage-dark:#4a6b4e;
+      --terra:#c47c5a;--terra-light:#f0d5c8;--terra-dark:#8a4a2e;
+      --gold:#d4a847;--gold-light:#f5e9c8;--gold-dark:#8a6a1e;
+    }
+    body{font-family:'Caveat',cursive;background:#2a2a2a;display:flex;justify-content:center;padding:1rem;min-height:100vh}
+    #app{max-width:480px;width:100%;padding:1rem;background:var(--cream);border-radius:16px;border:1px solid var(--cream3);height:fit-content}
+    h1{font-size:26px;font-weight:700;color:var(--ink);margin-bottom:2px}
+    .sub{font-size:15px;color:var(--ink2);font-style:italic;margin-bottom:1rem}
+    .controls{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:0.75rem}
+    .controls label{font-size:15px;color:var(--ink2)}
+    .controls-row{display:flex;gap:6px;margin-bottom:0.75rem;align-items:center}
+    button, select {
+      font-family:'Caveat',cursive !important;
+      font-size:15px !important;
+      padding:5px 12px !important;
+      background:#3b3228 !important;
+      color:#ffffff !important;
+      border:none !important;
+      border-radius:8px !important;
+      cursor:pointer !important;
+      font-weight:500 !important;
+      white-space:nowrap !important;
+      -webkit-appearance:none !important;
+      appearance:none !important;
+    }
+    button:hover, select:hover{background:#5a4a3a !important}
+    button.btn-sm{font-size:13px !important;padding:3px 10px !important}
+    button.btn-active{background:#4a6b4e !important}
+    select{flex:1;min-width:0}
+    #grid-wrap{width:100%;margin-bottom:0.75rem;position:relative}
+    #grid{display:grid;gap:2px;width:100%;position:relative;z-index:1}
+    #diag-canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:2}
+    .cell{
+      display:flex;align-items:center;justify-content:center;
+      font-weight:500 !important;font-family:'Caveat',cursive !important;
+      border-radius:6px !important;border:1px solid var(--cream3) !important;
+      background:var(--cream2) !important;color:var(--ink) !important;
+      cursor:pointer;transition:background 0.1s,color 0.1s;
+      aspect-ratio:1;position:relative;z-index:1;padding:0 !important;
+    }
+    .cell.selecting{background:var(--sage-light) !important;color:var(--sage-dark) !important;border-color:var(--sage) !important}
+    .cell.found{background:var(--sage-light) !important;color:var(--sage-dark) !important;border-color:transparent !important}
+    .cell.hidden-found{background:var(--gold-light) !important;color:var(--gold-dark) !important;border-color:transparent !important}
+    .panel{background:var(--cream2);border-radius:12px;padding:0.75rem;margin-bottom:0.75rem;border:1px solid var(--cream3)}
+    .wl-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+    .wl-header span{font-size:16px;font-weight:500;color:var(--ink)}
+    .hint-line{font-size:14px;color:var(--ink3);margin-bottom:8px;font-style:italic}
+    .word-cols{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0 4px}
+    .word-col{display:flex;flex-direction:column;gap:1px}
+    .word-row{display:flex;align-items:center;gap:3px;padding:2px 0;white-space:nowrap}
+    .word-blanks{font-size:13px;font-weight:500;color:var(--ink);letter-spacing:1px}
+    .word-revealed{font-size:13px;color:var(--ink2)}
+    .word-strike{font-size:13px;color:var(--ink3);text-decoration:line-through}
+    .check{color:var(--sage-dark);font-size:12px;flex-shrink:0}
+    .found-panel h3{font-size:16px;font-weight:500;color:var(--ink);margin-bottom:6px}
+    .found-tags{display:flex;flex-wrap:wrap;gap:4px}
+    .found-tag{font-family:'Caveat',cursive;font-size:14px;padding:2px 9px;border-radius:6px;background:var(--cream);border:1px solid var(--cream3);color:var(--ink2)}
+    .found-tag.is-list{background:var(--sage-light);color:var(--sage-dark);border-color:transparent}
+    .found-tag.is-bonus{background:var(--terra-light);color:var(--terra-dark);border-color:transparent}
+    .found-tag.is-hidden{background:var(--gold-light);color:var(--gold-dark);border-color:transparent;font-weight:700}
+    .found-tag.is-checking{opacity:0.5;font-style:italic}
+    .message{font-size:16px;color:var(--terra-dark);min-height:20px;font-style:italic;text-align:center;padding:0.25rem 0}
+    .story-card{background:var(--gold-light);border:1px solid var(--gold);border-radius:12px;padding:0.875rem;margin-bottom:0.75rem;display:none}
+    .story-card.visible{display:block}
+    .story-num{font-size:13px;color:var(--gold-dark);margin-bottom:4px;font-style:italic}
+    .story-text{font-size:16px;color:var(--ink);line-height:1.4}
+    .complete-overlay{display:none;position:fixed;inset:0;background:rgba(42,42,42,0.82);z-index:50;align-items:center;justify-content:center;padding:1rem}
+    .complete-overlay.visible{display:flex}
+    .complete-card{background:var(--cream);border-radius:16px;border:1px solid var(--cream3);padding:1.75rem 1.5rem;max-width:320px;width:100%;text-align:center}
+    .complete-title{font-size:22px;font-weight:700;color:var(--ink);margin-bottom:0.5rem}
+    .complete-body{font-size:16px;color:var(--ink2);font-style:italic;margin-bottom:1.25rem;line-height:1.45}
+    .complete-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+  </style>
+</head>
+<body>
+<div id="app">
+  <h1>Word Search</h1>
+  <p class="sub">Find everything — then keep looking...</p>
+  <div class="controls">
+    <label>Theme:</label>
+    <select id="theme-sel">
+      <option value="animals">Animals</option>
+      <option value="space">Space</option>
+      <option value="food">Food</option>
+    </select>
+    <label>Grid:</label>
+    <select id="size-sel">
+      <option value="10">10×10</option>
+      <option value="12" selected>12×12</option>
+      <option value="15">15×15</option>
+    </select>
+    <button id="new-btn">New puzzle</button>
+  </div>
+  <div class="controls-row">
+    <button class="btn-sm" id="diag-toggle">⟋ Diagonal guides: off</button>
+  </div>
+  <div id="grid-wrap">
+    <canvas id="diag-canvas"></canvas>
+    <div id="grid"></div>
+  </div>
+  <p class="message" id="message"></p>
+  <div class="story-card" id="story-card">
+    <p class="story-num" id="story-num"></p>
+    <p class="story-text" id="story-text"></p>
+  </div>
+  <div class="panel">
+    <div class="wl-header">
+      <span>Words to find</span>
+      <button class="btn-sm" id="toggle-btn">Show list</button>
+    </div>
+    <p class="hint-line" id="hint-line"></p>
+    <div class="word-cols" id="word-list"></div>
+  </div>
+  <div class="panel found-panel">
+    <h3>Found</h3>
+    <div class="found-tags" id="found-list"><span style="font-size:15px;color:#9c8f82;font-style:italic">Nothing yet...</span></div>
+  </div>
+</div>
+
+<div id="complete-modal" class="complete-overlay" role="dialog" aria-modal="true">
+  <div class="complete-card">
+    <p class="complete-title" id="complete-title"></p>
+    <p class="complete-body" id="complete-body"></p>
+    <div class="complete-btns" id="complete-btns"></div>
+  </div>
+</div>
+
+<script>
+// ─── Constants ───────────────────────────────────────────────────────────────
+const MIN_LEN = 4;
+const MAX_LEN = 6;
+const WORDS_PER_SIZE = {10: 10, 12: 15, 15: 20};
+const DIRS = [[0,1],[1,0],[0,-1],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]];
+const STORAGE_KEY = 'wordsearch_v1';
+
+// ─── Theme Data ───────────────────────────────────────────────────────────────
+const THEMES = {
+  animals: {
+    words: [
+      'BEAR','BIRD','BUCK','COLT','CRAB','CROW','DEER','DOVE','DUCK','FAWN',
+      'FROG','HAWK','HARE','IBIS','KITE','LAMB','LYNX','MOLE','MOTH','MULE',
+      'NEWT','PONY','TOAD','VOLE','WREN','BISON','CRANE','DINGO','EAGLE','GECKO',
+      'HERON','KOALA','LEMUR','OTTER','PANDA','QUAIL','RAVEN','SNAKE','STORK','STOAT','VIXEN',
+      'BADGER','MAGPIE','OSPREY','RABBIT','SALMON','THRUSH','WEASEL','BEAVER','FERRET'
+    ],
+    hidden: [
+      { word: 'WILD',   story: "\"Tell me, what is it you plan to do with your one wild and precious life?\" — Mary Oliver, The Summer Day" },
+      { word: 'FERAL',  story: "In the 1980s, a population of domestic rabbits was released on Macquarie Island near Antarctica. Within decades they had stripped the island nearly bare, destabilizing cliffs and destroying seabird colonies. Removing them took twenty years and cost $25 million. Domesticity, it turns out, is no guarantee of harmlessness." },
+      { word: 'FAUNA',  story: "The word comes from Fauna, a Roman goddess of earth and fertility — sister to Faunus, god of the forest. Carl Linnaeus borrowed her name in 1745 to mean \"the animals of a place.\" Every field guide in the world is quietly dedicated to a forgotten goddess." },
+      { word: 'PROWL',  story: "A lioness named Scarlett's Sister in the Maasai Mara was documented making solo kills for over a decade — unusual for lions, who hunt in groups. Rangers tracked her movements for years. She never once hunted the same corridor twice in a row." },
+      { word: 'ROOST',  story: "A murmuration of starlings can contain over a million birds moving as a single fluid shape. No leader directs them — each bird tracks its seven nearest neighbors. The math that governs them is the same math that governs school fish and beating hearts." },
+      { word: 'GRAZE',  story: "A single cow grazing a field does not eat randomly — it moves in consistent patterns, favoring certain grasses, avoiding others, returning to the same patches in the same order. Ecologists call this \"selective grazing.\" The field that looks uniform to us is a deeply familiar landscape to them." },
+      { word: 'STALK',  story: "\"The hunter crouches in his blind / 'til dusk and danger pass. / The outcome of his long pursuit / belongs to God and grass.\" — Ogden Nash, The Hunter" },
+      { word: 'HAUNT',  story: "A solitary sperm whale known as 52 Hertz has been tracked by Navy hydrophones since 1989. It calls at a frequency no other whale uses — too high for them to hear. It has been singing into silence for over thirty years. Whether it is lonely is a question we cannot answer. That we keep asking it says something about us." },
+      { word: 'BURROW', story: "Wombats produce cube-shaped droppings — the only known animal to do so. They use them to mark territory on rocks and logs without them rolling away. Scientists spent years studying the digestive mechanics. The secret is in the last 8% of the intestine, where the walls pulse unevenly." },
+      { word: 'FORAGE', story: "In 2009, a crow named 007 at a Japanese university was filmed using a sequence of eight tools in the correct order to retrieve food — planning multiple steps ahead. He hadn't been taught the sequence. He figured it out alone, over several days of quiet observation." }
+    ]
+  },
+  space: {
+    words: [
+      'AXIS','DARK','DAWN','DUST','FLUX','HALO','HAZE','LOOP','MASS','MOON',
+      'NOVA','RING','VOID','WAVE','ZONE','COMET','FLARE','ORBIT','PHASE','PROBE',
+      'PULSE','QUARK','REALM','SOLAR','SPARK','DEBRIS','HELIUM','IMPACT','ZENITH','PHOTON',
+      'NEBULA','METEOR','PULSAR','CORONA','AURORA','QUASAR'
+    ],
+    hidden: [
+      { word: 'VAST',    story: "\"Space is big. You just won't believe how vastly, hugely, mind-bogglingly big it is.\" — Douglas Adams, The Hitchhiker's Guide to the Galaxy" },
+      { word: 'DRIFT',   story: "Objects left in low Earth orbit don't stay there forever — atmospheric drag slowly pulls them down. But objects left in higher orbits will remain for millions of years. The Voyager 1 probe, launched in 1977, is now over 23 billion kilometers away and still sending data. It will drift through interstellar space long after every human alive today is gone." },
+      { word: 'ABYSS',   story: "The Boötes Void is a region of space roughly 330 million light-years across containing almost nothing — no galaxies, no stars, no known matter. It is so empty that astronomers initially assumed their instruments were broken. Its existence is not fully explained by any current model of the universe." },
+      { word: 'COSMIC',  story: "\"The cosmos is within us. We are made of star-stuff. We are a way for the universe to know itself.\" — Carl Sagan, Cosmos" },
+      { word: 'LAUNCH',  story: "\"Earth is the cradle of humanity, but one cannot remain in the cradle forever.\" — Konstantin Tsiolkovsky, pioneer of astronautics, written in 1895 — 58 years before the first satellite launch" },
+      { word: 'STELLAR', story: "In 1054 AD, astronomers in China, Japan, and the Arab world all independently recorded a new star so bright it was visible in daylight for 23 days. No European record exists — historians believe the Church considered it theologically inconvenient. What they saw was a supernova. Its remnant, the Crab Nebula, is still expanding today at 1,500 kilometers per second." },
+      { word: 'HORIZON', story: "When Apollo 8 astronaut William Anders looked back at Earth from lunar orbit on Christmas Eve 1968, he grabbed a camera and took a photograph without authorization — it wasn't in the flight plan. That image, Earthrise, became one of the most reproduced photographs in history and is credited with launching the modern environmental movement." },
+      { word: 'EXPANSE', story: "Light leaving the edge of the observable universe takes 46 billion light-years to reach us — even though the universe is only 13.8 billion years old. The difference is because space itself has been expanding the whole time. The universe is not just big. It is actively getting bigger, in every direction, right now." },
+      { word: 'COSMOS',  story: "When Carl Sagan's original Cosmos series aired in 1980, it was the most watched PBS program in history. Sagan received thousands of letters from viewers who said it changed how they thought about their lives. One letter, from a prisoner, said: \"I look up at the stars now and I don't feel so trapped.\" Sagan wrote back to him personally." },
+      { word: 'PULSAR',  story: "Pulsars are so metronomically precise that they were briefly considered as the basis for a universal timekeeping standard — more accurate than atomic clocks. The most stable known pulsar loses less than a millisecond every 300 million years. They are the most accurate clocks in the universe, built by physics, running since before Earth existed." }
+    ]
+  },
+  food: {
+    words: [
+      'BEET','BRIE','CAKE','DILL','FETA','KALE','LEEK','LIME','MINT','MISO',
+      'OATS','PLUM','ROUX','SAGE','TARO','BASIL','CHIVE','CLOVE','CUMIN','FENNEL',
+      'HONEY','LEMON','OLIVE','THYME','CAPERS','GARLIC','GINGER','MILLET','NUTMEG','PEPPER',
+      'RADISH','SORREL','SUMAC','WALNUT','ENDIVE','ANISE'
+    ],
+    hidden: [
+      { word: 'RIPE',    story: "In 2013, a Japanese farmer named Zentsuji Imamura began growing watermelons inside cubic molds, producing perfect square fruit that stacked easily and fit in refrigerators. They became luxury items selling for $100 each. The problem: to stay square, they had to be harvested before they were ripe. They were decorative objects. You couldn't eat them. Japan continued buying them anyway." },
+      { word: 'ZEST',    story: "\"Cooking is like love. It should be entered into with abandon or not at all.\" — Harriet Van Horne" },
+      { word: 'FEAST',   story: "The average American Thanksgiving dinner takes roughly 16 hours to prepare and 20 minutes to eat. The turkey alone requires days of planning — brining, thawing, resting. Humans are the only species that regularly spends more time preparing food than consuming it. Anthropologists consider elaborate food preparation one of the defining markers of civilization." },
+      { word: 'STEEP',   story: "Tea is the second most consumed beverage in the world after water. The difference between a bitter cup and a perfect one is often a matter of seconds — green tea steeped 30 seconds too long becomes undrinkable. The entire global tea ceremony tradition, across dozens of cultures, is essentially an elaborately codified answer to the question of when to stop." },
+      { word: 'BLEND',   story: "Worcestershire sauce was created by accident in 1837 when chemist John Wheeley Lea and his partner were asked to recreate a sauce from India for a British nobleman. The result was so unpleasant they sealed the barrel and forgot about it in the cellar. Two years later they found it again. It had fermented into something extraordinary. It has been made the same way ever since." },
+      { word: 'SAVOR',   story: "\"One cannot think well, love well, sleep well, if one has not dined well.\" — Virginia Woolf, A Room of One's Own" },
+      { word: 'SIMMER',  story: "French mother sauces — béchamel, velouté, espagnole, sauce tomat, hollandaise — underpin virtually all of classical Western cooking. Auguste Escoffier codified them in the early 1900s. Every cream sauce, gravy, and cheese sauce you have ever eaten traces its lineage to one of five recipes written by a man who ran hotel kitchens in London and Paris over a century ago." },
+      { word: 'SEASON',  story: "In 1908, Japanese chemist Kikunae Ikeda was eating a bowl of dashi broth when he noticed it had a distinct savory quality that wasn't sweet, sour, salty, or bitter. He spent months isolating the compound responsible — glutamate — and named the taste umami, meaning \"pleasant savory taste.\" He then patented the process for producing it commercially. That product was MSG." },
+      { word: 'HARVEST', story: "\"You can't just eat good food. You've got to talk about it too. And you've got to talk about it to somebody who understands that kind of food.\" — Kurt Vonnegut, Jailbird" },
+      { word: 'KNEAD',   story: "Kneading develops gluten — the protein network that gives bread its structure and chew. But bakers have known for centuries that over-kneaded dough becomes tough and unforgiving. The skill is not in the effort but in knowing when to stop. Every experienced baker describes the moment the dough is ready the same way: it feels alive under your hands." }
+    ]
+  }
+};
+
+// ─── State ────────────────────────────────────────────────────────────────────
+let state = {
+  grid: [], size: 12, words: [], hidden: '', hiddenStory: '',
+  placed: [], selecting: [], found: new Set(), bonus: [],
+  showList: false, dragging: false, usedHidden: {},
+  checking: new Set(), foundHiddenCount: {}, diagOn: false, cellSize: 0
+};
+
+// ─── Utilities ────────────────────────────────────────────────────────────────
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ─── Storage ──────────────────────────────────────────────────────────────────
+function saveToStorage() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      usedHidden: state.usedHidden,
+      foundHiddenCount: state.foundHiddenCount,
+      diagOn: state.diagOn,
+      theme: document.getElementById('theme-sel').value,
+      size: state.size,
+      grid: state.grid,
+      words: state.words,
+      placed: state.placed,
+      hidden: state.hidden,
+      hiddenStory: state.hiddenStory,
+      found: [...state.found],
+      bonus: state.bonus,
+      showList: state.showList,
+    }));
+  } catch {}
+}
+
+function loadFromStorage() {
+  try {
+    const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+    if (!data || !Array.isArray(data.grid) || !data.grid.length) return false;
+    document.getElementById('theme-sel').value = data.theme;
+    document.getElementById('size-sel').value = String(data.size);
+    Object.assign(state, {
+      usedHidden: data.usedHidden || {},
+      foundHiddenCount: data.foundHiddenCount || {},
+      diagOn: !!data.diagOn,
+      size: data.size,
+      grid: data.grid,
+      words: data.words,
+      placed: data.placed,
+      hidden: data.hidden,
+      hiddenStory: data.hiddenStory,
+      found: new Set(data.found || []),
+      bonus: data.bonus || [],
+      showList: !!data.showList,
+      selecting: [], dragging: false, checking: new Set(),
+    });
+    const diagBtn = document.getElementById('diag-toggle');
+    diagBtn.textContent = state.diagOn ? '⟋ Diagonal guides: on' : '⟋ Diagonal guides: off';
+    if (state.diagOn) diagBtn.classList.add('btn-active'); else diagBtn.classList.remove('btn-active');
+    document.getElementById('toggle-btn').textContent = state.showList ? 'Hide list' : 'Show list';
+    if (state.found.has(state.hidden)) {
+      const count = state.foundHiddenCount[data.theme] || 1;
+      document.getElementById('story-num').textContent = `Fragment ${count} of 10`;
+      document.getElementById('story-text').textContent = state.hiddenStory;
+      document.getElementById('story-card').classList.add('visible');
+    }
+    render();
+    return true;
+  } catch { return false; }
+}
+
+// ─── Grid Building ────────────────────────────────────────────────────────────
+function canPlace(grid, word, r, c, dr, dc) {
+  for (let i = 0; i < word.length; i++) {
+    const nr = r + dr * i, nc = c + dc * i;
+    if (nr < 0 || nr >= grid.length || nc < 0 || nc >= grid[0].length) return false;
+    if (grid[nr][nc] !== '.' && grid[nr][nc] !== word[i]) return false;
+  }
+  return true;
+}
+
+function placeWord(grid, word, placed) {
+  for (let t = 0; t < 300; t++) {
+    const [dr, dc] = DIRS[Math.floor(Math.random() * DIRS.length)];
+    const r = Math.floor(Math.random() * grid.length);
+    const c = Math.floor(Math.random() * grid[0].length);
+    if (canPlace(grid, word, r, c, dr, dc)) {
+      const cells = [];
+      for (let i = 0; i < word.length; i++) {
+        grid[r + dr * i][c + dc * i] = word[i];
+        cells.push([r + dr * i, c + dc * i]);
+      }
+      placed.push({ word, cells });
+      return true;
+    }
+  }
+  return false;
+}
+
+function buildGrid(size, words, hidden) {
+  const grid = Array.from({ length: size }, () => Array(size).fill('.'));
+  const placed = [];
+  for (const w of [...words, hidden]) placeWord(grid, w, placed);
+  const L = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  for (let r = 0; r < size; r++)
+    for (let c = 0; c < size; c++)
+      if (grid[r][c] === '.') grid[r][c] = L[Math.floor(Math.random() * 26)];
+  return { grid, placed };
+}
+
+function pickHidden(theme) {
+  const pool = THEMES[theme].hidden.filter(h => h.word.length >= MIN_LEN && h.word.length <= MAX_LEN);
+  const used = state.usedHidden[theme] || [];
+  let available = pool.filter(h => !used.includes(h.word));
+  if (!available.length) { available = [...pool]; state.usedHidden[theme] = []; }
+  const chosen = pick(available);
+  state.usedHidden[theme] = [...(state.usedHidden[theme] || []), chosen.word];
+  return chosen;
+}
+
+// ─── Puzzle Setup ─────────────────────────────────────────────────────────────
+function newPuzzle() {
+  const theme = document.getElementById('theme-sel').value;
+  const size = parseInt(document.getElementById('size-sel').value);
+  const pool = THEMES[theme].words.filter(w => w.length >= MIN_LEN && w.length <= MAX_LEN);
+  const target = WORDS_PER_SIZE[size] ?? 15;
+  const candidates = shuffle(pool).slice(0, target + 3);
+  const hiddenEntry = pickHidden(theme);
+  const { grid, placed } = buildGrid(size, candidates, hiddenEntry.word);
+  const placedList = placed.filter(p => p.word !== hiddenEntry.word).slice(0, target);
+  const actualPlaced = [...placedList, ...placed.filter(p => p.word === hiddenEntry.word)];
+  const actualWords = placedList.map(p => p.word).sort();
+  state = {
+    ...state, grid, size, words: actualWords,
+    hidden: hiddenEntry.word, hiddenStory: hiddenEntry.story,
+    placed: actualPlaced, selecting: [], found: new Set(), bonus: [],
+    showList: false, checking: new Set()
+  };
+  document.getElementById('toggle-btn').textContent = 'Show list';
+  document.getElementById('message').textContent = '';
+  document.getElementById('story-card').classList.remove('visible');
+  document.getElementById('complete-modal').classList.remove('visible');
+  render();
+  saveToStorage();
+}
+
+// ─── Selection ────────────────────────────────────────────────────────────────
+function cellKey(r, c) { return r + ',' + c; }
+
+function getSelection() {
+  if (!state.selecting.length) return [];
+  if (state.selecting.length === 1) return [{ r: state.selecting[0][0], c: state.selecting[0][1] }];
+  const [r0, c0] = state.selecting[0];
+  const [r1, c1] = state.selecting[state.selecting.length - 1];
+  const dr = Math.sign(r1 - r0), dc = Math.sign(c1 - c0);
+  if (dr === 0 && dc === 0) return [{ r: r0, c: c0 }];
+  const cells = []; let r = r0, c = c0;
+  while (true) {
+    cells.push({ r, c });
+    if (r === r1 && c === c1) break;
+    r += dr; c += dc;
+    if (cells.length > state.size + 2) break;
+  }
+  return cells;
+}
+
+// ─── Dictionary ───────────────────────────────────────────────────────────────
+async function checkDictionary(word) {
+  try {
+    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word.toLowerCase()}`);
+    return res.ok;
+  } catch { return false; }
+}
+
+// ─── Commit Selection ─────────────────────────────────────────────────────────
+async function commitSelection() {
+  const cells = getSelection();
+  if (cells.length < 2) { state.selecting = []; renderGrid(); return; }
+  const word = cells.map(({ r, c }) => state.grid[r][c]).join('');
+  const wordRev = word.split('').reverse().join('');
+  const match = state.placed.find(p => p.word === word || p.word === wordRev);
+  if (match) {
+    let newlyFound = false;
+    if (!state.found.has(match.word)) {
+      state.found.add(match.word);
+      newlyFound = true;
+      if (match.word === state.hidden) {
+        const theme = document.getElementById('theme-sel').value;
+        state.foundHiddenCount[theme] = (state.foundHiddenCount[theme] || 0) + 1;
+        const count = state.foundHiddenCount[theme];
+        document.getElementById('story-num').textContent = `Fragment ${count} of 10`;
+        document.getElementById('story-text').textContent = state.hiddenStory;
+        document.getElementById('story-card').classList.add('visible');
+        document.getElementById('message').textContent = '✨ You found the hidden word!';
+      }
+    }
+    state.selecting = []; render(); saveToStorage();
+    if (newlyFound && match.word !== state.hidden) checkCompletion();
+  } else {
+    const candidate = word.length >= wordRev.length ? word : wordRev;
+    state.selecting = []; renderGrid();
+    if (
+      candidate.length >= MIN_LEN && candidate.length <= MAX_LEN &&
+      !state.bonus.includes(word) && !state.bonus.includes(wordRev) &&
+      !state.words.includes(candidate) && !state.checking.has(candidate)
+    ) {
+      state.checking.add(candidate); renderFound();
+      const valid = await checkDictionary(candidate);
+      state.checking.delete(candidate);
+      if (valid && !state.bonus.includes(candidate)) state.bonus.push(candidate);
+      renderFound(); saveToStorage();
+    }
+  }
+}
+
+// ─── Diagonal Guides ──────────────────────────────────────────────────────────
+function drawDiagonals() {
+  const canvas = document.getElementById('diag-canvas');
+  const wrap = document.getElementById('grid-wrap');
+  if (!state.diagOn) { canvas.style.display = 'none'; return; }
+  canvas.style.display = 'block';
+  const cs = state.cellSize, gap = 2, total = state.size, w = wrap.offsetWidth;
+  canvas.width = w; canvas.height = w;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, w, w);
+  ctx.strokeStyle = 'rgba(90,110,95,0.35)';
+  ctx.lineWidth = 1;
+  const step = cs + gap, half = cs / 2;
+  for (let start = -(total - 1); start < total; start++) {
+    let r = Math.max(0, -start), c = Math.max(0, start);
+    ctx.beginPath(); ctx.moveTo(c * step + half, r * step + half);
+    while (r < total && c < total) { r++; c++; }
+    ctx.lineTo((c - 1) * step + half, (r - 1) * step + half); ctx.stroke();
+  }
+  for (let start = 0; start < total * 2 - 1; start++) {
+    let r = Math.max(0, start - total + 1), c = Math.min(total - 1, start);
+    ctx.beginPath(); ctx.moveTo(c * step + half, r * step + half);
+    while (r < total && c >= 0) { r++; c--; }
+    ctx.lineTo((c + 1) * step + half, (r - 1) * step + half); ctx.stroke();
+  }
+}
+
+// ─── Render Grid ──────────────────────────────────────────────────────────────
+function renderGrid() {
+  const wrap = document.getElementById('grid-wrap');
+  const grid = document.getElementById('grid');
+  const cellSize = Math.floor((wrap.offsetWidth - (state.size - 1) * 2) / state.size);
+  state.cellSize = cellSize;
+  grid.style.gridTemplateColumns = `repeat(${state.size},${cellSize}px)`;
+  const sel = new Set(getSelection().map(({ r, c }) => cellKey(r, c)));
+  const foundCells = new Set(), hiddenCells = new Set();
+  for (const p of state.placed) {
+    if (state.found.has(p.word)) {
+      if (p.word === state.hidden) p.cells.forEach(([r, c]) => hiddenCells.add(cellKey(r, c)));
+      else p.cells.forEach(([r, c]) => foundCells.add(cellKey(r, c)));
+    }
+  }
+  grid.innerHTML = '';
+  for (let r = 0; r < state.size; r++) {
+    for (let c = 0; c < state.size; c++) {
+      const div = document.createElement('div');
+      div.className = 'cell';
+      div.style.cssText = `width:${cellSize}px;height:${cellSize}px;font-size:${Math.max(10, Math.floor(cellSize * 0.55))}px`;
+      div.textContent = state.grid[r][c];
+      div.dataset.r = r; div.dataset.c = c;
+      const key = cellKey(r, c);
+      if (sel.has(key)) div.classList.add('selecting');
+      else if (hiddenCells.has(key)) div.classList.add('hidden-found');
+      else if (foundCells.has(key)) div.classList.add('found');
+      div.addEventListener('mousedown', e => { e.preventDefault(); state.dragging = true; state.selecting = [[r, c]]; renderGrid(); });
+      div.addEventListener('mouseover', () => { if (state.dragging) { state.selecting = [state.selecting[0], [r, c]]; renderGrid(); } });
+      div.addEventListener('mouseup', () => { state.dragging = false; commitSelection(); });
+      div.addEventListener('touchstart', e => { e.preventDefault(); state.dragging = true; state.selecting = [[r, c]]; renderGrid(); }, { passive: false });
+      div.addEventListener('touchmove', e => {
+        e.preventDefault();
+        const t = e.touches[0];
+        const el = document.elementFromPoint(t.clientX, t.clientY);
+        if (el && el.dataset.r !== undefined) { state.selecting = [state.selecting[0], [+el.dataset.r, +el.dataset.c]]; renderGrid(); }
+      }, { passive: false });
+      div.addEventListener('touchend', e => { e.preventDefault(); state.dragging = false; commitSelection(); }, { passive: false });
+      grid.appendChild(div);
+    }
+  }
+  drawDiagonals();
+}
+
+// ─── Render Word List ─────────────────────────────────────────────────────────
+function renderWordList() {
+  const wl = document.getElementById('word-list');
+  const found = state.words.filter(w => state.found.has(w)).length;
+  document.getElementById('hint-line').textContent = `${found} of ${state.words.length} found — and one more hiding...`;
+  wl.innerHTML = '';
+  const cols = 4, perCol = Math.ceil(state.words.length / cols);
+  for (let i = 0; i < cols; i++) {
+    const colDiv = document.createElement('div'); colDiv.className = 'word-col';
+    const colWords = state.words.slice(i * perCol, (i + 1) * perCol);
+    for (const w of colWords) {
+      const div = document.createElement('div'); div.className = 'word-row';
+      if (state.found.has(w)) {
+        div.innerHTML = `<span class="check">✓</span><span class="word-strike">${w}</span>`;
+      } else if (state.showList) {
+        div.innerHTML = `<span style="width:10px"></span><span class="word-revealed">${w}</span>`;
+      } else {
+        div.innerHTML = `<span style="width:10px"></span><span class="word-blanks">${Array(w.length).fill('_').join(' ')}</span>`;
+      }
+      colDiv.appendChild(div);
+    }
+    wl.appendChild(colDiv);
+  }
+}
+
+// ─── Render Found ─────────────────────────────────────────────────────────────
+function renderFound() {
+  const fl = document.getElementById('found-list');
+  fl.innerHTML = ''; let any = false;
+  for (const w of state.found) {
+    const t = document.createElement('span');
+    if (w === state.hidden) { t.className = 'found-tag is-hidden'; t.textContent = '✨ ' + w; }
+    else { t.className = 'found-tag is-list'; t.textContent = w; }
+    fl.appendChild(t); any = true;
+  }
+  for (const w of state.bonus) {
+    const t = document.createElement('span'); t.className = 'found-tag is-bonus'; t.textContent = w;
+    fl.appendChild(t); any = true;
+  }
+  for (const w of state.checking) {
+    const t = document.createElement('span'); t.className = 'found-tag is-checking'; t.textContent = w + '...';
+    fl.appendChild(t); any = true;
+  }
+  if (!any) fl.innerHTML = '<span style="font-size:15px;color:#9c8f82;font-style:italic">Nothing yet...</span>';
+}
+
+function render() { renderGrid(); renderWordList(); renderFound(); }
+
+// ─── Completion Modal ─────────────────────────────────────────────────────────
+function showCompletion() {
+  const hiddenFound = state.found.has(state.hidden);
+  document.getElementById('complete-title').textContent = hiddenFound
+    ? 'You found everything.'
+    : 'You found them all.';
+  document.getElementById('complete-body').textContent = hiddenFound
+    ? 'All fifteen — and the one that was hiding, too. Ready for another?'
+    : 'Every word on the list. There\'s still one more hiding in the grid, if you want to keep looking.';
+  const btns = document.getElementById('complete-btns');
+  btns.innerHTML = '';
+  if (!hiddenFound) {
+    const keepBtn = document.createElement('button');
+    keepBtn.textContent = 'Keep searching';
+    keepBtn.addEventListener('click', () => document.getElementById('complete-modal').classList.remove('visible'));
+    btns.appendChild(keepBtn);
+  }
+  const newBtn = document.createElement('button');
+  newBtn.textContent = 'New puzzle';
+  newBtn.addEventListener('click', () => {
+    document.getElementById('complete-modal').classList.remove('visible');
+    newPuzzle();
+  });
+  btns.appendChild(newBtn);
+  document.getElementById('complete-modal').classList.add('visible');
+}
+
+function checkCompletion() {
+  if (state.words.every(w => state.found.has(w))) showCompletion();
+}
+
+// ─── Event Listeners ──────────────────────────────────────────────────────────
+document.getElementById('new-btn').addEventListener('click', newPuzzle);
+document.getElementById('toggle-btn').addEventListener('click', () => {
+  state.showList = !state.showList;
+  document.getElementById('toggle-btn').textContent = state.showList ? 'Hide list' : 'Show list';
+  renderWordList(); saveToStorage();
+});
+document.getElementById('diag-toggle').addEventListener('click', () => {
+  state.diagOn = !state.diagOn;
+  const btn = document.getElementById('diag-toggle');
+  btn.textContent = state.diagOn ? '⟋ Diagonal guides: on' : '⟋ Diagonal guides: off';
+  if (state.diagOn) btn.classList.add('btn-active'); else btn.classList.remove('btn-active');
+  drawDiagonals(); saveToStorage();
+});
+document.getElementById('theme-sel').addEventListener('change', newPuzzle);
+document.getElementById('size-sel').addEventListener('change', newPuzzle);
+document.addEventListener('mouseup', () => { if (state.dragging) { state.dragging = false; commitSelection(); } });
+window.addEventListener('resize', () => renderGrid());
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+if (!loadFromStorage()) newPuzzle();
+</script>
+</body>
+</html>
