@@ -87,24 +87,36 @@
 <body>
 <div id="app">
   <h1>Word Search</h1>
-  <p class="sub">Find everything — then keep looking...</p>
+  <p class=”sub”>Find everything &mdash; then keep looking...</p>
   <div class="controls">
     <label>Theme:</label>
     <select id="theme-sel">
-      <option value="animals">Animals</option>
-      <option value="space">Space</option>
-      <option value="food">Food</option>
+      <optgroup label="Nature &amp; Places">
+        <option value="animals">Animals</option>
+        <option value="beach">Beach</option>
+        <option value="space">Space</option>
+      </optgroup>
+      <optgroup label="Life &amp; Culture">
+        <option value="food">Food</option>
+      </optgroup>
+      <optgroup label="The Arcane">
+        <option value="tarot">Tarot</option>
+      </optgroup>
+      <optgroup label="Fiction">
+        <option value="fantasy">Fantasy</option>
+        <option value="scifi">Science Fiction</option>
+      </optgroup>
     </select>
     <label>Grid:</label>
     <select id="size-sel">
-      <option value="10">10×10</option>
-      <option value="12" selected>12×12</option>
-      <option value="15">15×15</option>
+      <option value="10">10&times;10</option>
+      <option value="12" selected>12&times;12</option>
+      <option value="15">15&times;15</option>
     </select>
     <button id="new-btn">New puzzle</button>
   </div>
   <div class="controls-row">
-    <button class="btn-sm" id="diag-toggle">⟋ Diagonal guides: off</button>
+    <button class="btn-sm" id="diag-toggle">&#x27CB; Diagonal guides: off</button>
   </div>
   <div id="grid-wrap">
     <canvas id="diag-canvas"></canvas>
@@ -137,80 +149,16 @@
   </div>
 </div>
 
+<script src="themes.js"></script>
 <script>
-// ─── Constants ───────────────────────────────────────────────────────────────
+// â”€â”€â”€ Constants â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const MIN_LEN = 4;
 const MAX_LEN = 6;
 const WORDS_PER_SIZE = {10: 10, 12: 15, 15: 20};
 const DIRS = [[0,1],[1,0],[0,-1],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]];
 const STORAGE_KEY = 'wordsearch_v1';
 
-// ─── Theme Data ───────────────────────────────────────────────────────────────
-const THEMES = {
-  animals: {
-    words: [
-      'BEAR','BIRD','BUCK','COLT','CRAB','CROW','DEER','DOVE','DUCK','FAWN',
-      'FROG','HAWK','HARE','IBIS','KITE','LAMB','LYNX','MOLE','MOTH','MULE',
-      'NEWT','PONY','TOAD','VOLE','WREN','BISON','CRANE','DINGO','EAGLE','GECKO',
-      'HERON','KOALA','LEMUR','OTTER','PANDA','QUAIL','RAVEN','SNAKE','STORK','STOAT','VIXEN',
-      'BADGER','MAGPIE','OSPREY','RABBIT','SALMON','THRUSH','WEASEL','BEAVER','FERRET'
-    ],
-    hidden: [
-      { word: 'WILD',   story: "\"Tell me, what is it you plan to do with your one wild and precious life?\" — Mary Oliver, The Summer Day" },
-      { word: 'FERAL',  story: "In the 1980s, a population of domestic rabbits was released on Macquarie Island near Antarctica. Within decades they had stripped the island nearly bare, destabilizing cliffs and destroying seabird colonies. Removing them took twenty years and cost $25 million. Domesticity, it turns out, is no guarantee of harmlessness." },
-      { word: 'FAUNA',  story: "The word comes from Fauna, a Roman goddess of earth and fertility — sister to Faunus, god of the forest. Carl Linnaeus borrowed her name in 1745 to mean \"the animals of a place.\" Every field guide in the world is quietly dedicated to a forgotten goddess." },
-      { word: 'PROWL',  story: "A lioness named Scarlett's Sister in the Maasai Mara was documented making solo kills for over a decade — unusual for lions, who hunt in groups. Rangers tracked her movements for years. She never once hunted the same corridor twice in a row." },
-      { word: 'ROOST',  story: "A murmuration of starlings can contain over a million birds moving as a single fluid shape. No leader directs them — each bird tracks its seven nearest neighbors. The math that governs them is the same math that governs school fish and beating hearts." },
-      { word: 'GRAZE',  story: "A single cow grazing a field does not eat randomly — it moves in consistent patterns, favoring certain grasses, avoiding others, returning to the same patches in the same order. Ecologists call this \"selective grazing.\" The field that looks uniform to us is a deeply familiar landscape to them." },
-      { word: 'STALK',  story: "\"The hunter crouches in his blind / 'til dusk and danger pass. / The outcome of his long pursuit / belongs to God and grass.\" — Ogden Nash, The Hunter" },
-      { word: 'HAUNT',  story: "A solitary sperm whale known as 52 Hertz has been tracked by Navy hydrophones since 1989. It calls at a frequency no other whale uses — too high for them to hear. It has been singing into silence for over thirty years. Whether it is lonely is a question we cannot answer. That we keep asking it says something about us." },
-      { word: 'BURROW', story: "Wombats produce cube-shaped droppings — the only known animal to do so. They use them to mark territory on rocks and logs without them rolling away. Scientists spent years studying the digestive mechanics. The secret is in the last 8% of the intestine, where the walls pulse unevenly." },
-      { word: 'FORAGE', story: "In 2009, a crow named 007 at a Japanese university was filmed using a sequence of eight tools in the correct order to retrieve food — planning multiple steps ahead. He hadn't been taught the sequence. He figured it out alone, over several days of quiet observation." }
-    ]
-  },
-  space: {
-    words: [
-      'AXIS','DARK','DAWN','DUST','FLUX','HALO','HAZE','LOOP','MASS','MOON',
-      'NOVA','RING','VOID','WAVE','ZONE','COMET','FLARE','ORBIT','PHASE','PROBE',
-      'PULSE','QUARK','REALM','SOLAR','SPARK','DEBRIS','HELIUM','IMPACT','ZENITH','PHOTON',
-      'NEBULA','METEOR','PULSAR','CORONA','AURORA','QUASAR'
-    ],
-    hidden: [
-      { word: 'VAST',    story: "\"Space is big. You just won't believe how vastly, hugely, mind-bogglingly big it is.\" — Douglas Adams, The Hitchhiker's Guide to the Galaxy" },
-      { word: 'DRIFT',   story: "Objects left in low Earth orbit don't stay there forever — atmospheric drag slowly pulls them down. But objects left in higher orbits will remain for millions of years. The Voyager 1 probe, launched in 1977, is now over 23 billion kilometers away and still sending data. It will drift through interstellar space long after every human alive today is gone." },
-      { word: 'ABYSS',   story: "The Boötes Void is a region of space roughly 330 million light-years across containing almost nothing — no galaxies, no stars, no known matter. It is so empty that astronomers initially assumed their instruments were broken. Its existence is not fully explained by any current model of the universe." },
-      { word: 'COSMIC',  story: "\"The cosmos is within us. We are made of star-stuff. We are a way for the universe to know itself.\" — Carl Sagan, Cosmos" },
-      { word: 'LAUNCH',  story: "\"Earth is the cradle of humanity, but one cannot remain in the cradle forever.\" — Konstantin Tsiolkovsky, pioneer of astronautics, written in 1895 — 58 years before the first satellite launch" },
-      { word: 'STELLAR', story: "In 1054 AD, astronomers in China, Japan, and the Arab world all independently recorded a new star so bright it was visible in daylight for 23 days. No European record exists — historians believe the Church considered it theologically inconvenient. What they saw was a supernova. Its remnant, the Crab Nebula, is still expanding today at 1,500 kilometers per second." },
-      { word: 'HORIZON', story: "When Apollo 8 astronaut William Anders looked back at Earth from lunar orbit on Christmas Eve 1968, he grabbed a camera and took a photograph without authorization — it wasn't in the flight plan. That image, Earthrise, became one of the most reproduced photographs in history and is credited with launching the modern environmental movement." },
-      { word: 'EXPANSE', story: "Light leaving the edge of the observable universe takes 46 billion light-years to reach us — even though the universe is only 13.8 billion years old. The difference is because space itself has been expanding the whole time. The universe is not just big. It is actively getting bigger, in every direction, right now." },
-      { word: 'COSMOS',  story: "When Carl Sagan's original Cosmos series aired in 1980, it was the most watched PBS program in history. Sagan received thousands of letters from viewers who said it changed how they thought about their lives. One letter, from a prisoner, said: \"I look up at the stars now and I don't feel so trapped.\" Sagan wrote back to him personally." },
-      { word: 'PULSAR',  story: "Pulsars are so metronomically precise that they were briefly considered as the basis for a universal timekeeping standard — more accurate than atomic clocks. The most stable known pulsar loses less than a millisecond every 300 million years. They are the most accurate clocks in the universe, built by physics, running since before Earth existed." }
-    ]
-  },
-  food: {
-    words: [
-      'BEET','BRIE','CAKE','DILL','FETA','KALE','LEEK','LIME','MINT','MISO',
-      'OATS','PLUM','ROUX','SAGE','TARO','BASIL','CHIVE','CLOVE','CUMIN','FENNEL',
-      'HONEY','LEMON','OLIVE','THYME','CAPERS','GARLIC','GINGER','MILLET','NUTMEG','PEPPER',
-      'RADISH','SORREL','SUMAC','WALNUT','ENDIVE','ANISE'
-    ],
-    hidden: [
-      { word: 'RIPE',    story: "In 2013, a Japanese farmer named Zentsuji Imamura began growing watermelons inside cubic molds, producing perfect square fruit that stacked easily and fit in refrigerators. They became luxury items selling for $100 each. The problem: to stay square, they had to be harvested before they were ripe. They were decorative objects. You couldn't eat them. Japan continued buying them anyway." },
-      { word: 'ZEST',    story: "\"Cooking is like love. It should be entered into with abandon or not at all.\" — Harriet Van Horne" },
-      { word: 'FEAST',   story: "The average American Thanksgiving dinner takes roughly 16 hours to prepare and 20 minutes to eat. The turkey alone requires days of planning — brining, thawing, resting. Humans are the only species that regularly spends more time preparing food than consuming it. Anthropologists consider elaborate food preparation one of the defining markers of civilization." },
-      { word: 'STEEP',   story: "Tea is the second most consumed beverage in the world after water. The difference between a bitter cup and a perfect one is often a matter of seconds — green tea steeped 30 seconds too long becomes undrinkable. The entire global tea ceremony tradition, across dozens of cultures, is essentially an elaborately codified answer to the question of when to stop." },
-      { word: 'BLEND',   story: "Worcestershire sauce was created by accident in 1837 when chemist John Wheeley Lea and his partner were asked to recreate a sauce from India for a British nobleman. The result was so unpleasant they sealed the barrel and forgot about it in the cellar. Two years later they found it again. It had fermented into something extraordinary. It has been made the same way ever since." },
-      { word: 'SAVOR',   story: "\"One cannot think well, love well, sleep well, if one has not dined well.\" — Virginia Woolf, A Room of One's Own" },
-      { word: 'SIMMER',  story: "French mother sauces — béchamel, velouté, espagnole, sauce tomat, hollandaise — underpin virtually all of classical Western cooking. Auguste Escoffier codified them in the early 1900s. Every cream sauce, gravy, and cheese sauce you have ever eaten traces its lineage to one of five recipes written by a man who ran hotel kitchens in London and Paris over a century ago." },
-      { word: 'SEASON',  story: "In 1908, Japanese chemist Kikunae Ikeda was eating a bowl of dashi broth when he noticed it had a distinct savory quality that wasn't sweet, sour, salty, or bitter. He spent months isolating the compound responsible — glutamate — and named the taste umami, meaning \"pleasant savory taste.\" He then patented the process for producing it commercially. That product was MSG." },
-      { word: 'HARVEST', story: "\"You can't just eat good food. You've got to talk about it too. And you've got to talk about it to somebody who understands that kind of food.\" — Kurt Vonnegut, Jailbird" },
-      { word: 'KNEAD',   story: "Kneading develops gluten — the protein network that gives bread its structure and chew. But bakers have known for centuries that over-kneaded dough becomes tough and unforgiving. The skill is not in the effort but in knowing when to stop. Every experienced baker describes the moment the dough is ready the same way: it feels alive under your hands." }
-    ]
-  }
-};
-
-// ─── State ────────────────────────────────────────────────────────────────────
+// â”€â”€â”€ State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 let state = {
   grid: [], size: 12, words: [], hidden: '', hiddenStory: '',
   placed: [], selecting: [], found: new Set(), bonus: [],
@@ -218,7 +166,7 @@ let state = {
   checking: new Set(), foundHiddenCount: {}, diagOn: false, cellSize: 0
 };
 
-// ─── Utilities ────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Utilities â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
 function shuffle(arr) {
@@ -230,7 +178,7 @@ function shuffle(arr) {
   return a;
 }
 
-// ─── Storage ──────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Storage â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function saveToStorage() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
@@ -287,7 +235,7 @@ function loadFromStorage() {
   } catch { return false; }
 }
 
-// ─── Grid Building ────────────────────────────────────────────────────────────
+// â”€â”€â”€ Grid Building â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function canPlace(grid, word, r, c, dr, dc) {
   for (let i = 0; i < word.length; i++) {
     const nr = r + dr * i, nc = c + dc * i;
@@ -336,7 +284,7 @@ function pickHidden(theme) {
   return chosen;
 }
 
-// ─── Puzzle Setup ─────────────────────────────────────────────────────────────
+// â”€â”€â”€ Puzzle Setup â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function newPuzzle() {
   const theme = document.getElementById('theme-sel').value;
   const size = parseInt(document.getElementById('size-sel').value);
@@ -362,7 +310,7 @@ function newPuzzle() {
   saveToStorage();
 }
 
-// ─── Selection ────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Selection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function cellKey(r, c) { return r + ',' + c; }
 
 function getSelection() {
@@ -382,7 +330,7 @@ function getSelection() {
   return cells;
 }
 
-// ─── Dictionary ───────────────────────────────────────────────────────────────
+// â”€â”€â”€ Dictionary â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function checkDictionary(word) {
   try {
     const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word.toLowerCase()}`);
@@ -390,7 +338,7 @@ async function checkDictionary(word) {
   } catch { return false; }
 }
 
-// ─── Commit Selection ─────────────────────────────────────────────────────────
+// â”€â”€â”€ Commit Selection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function commitSelection() {
   const cells = getSelection();
   if (cells.length < 2) { state.selecting = []; renderGrid(); return; }
@@ -409,7 +357,7 @@ async function commitSelection() {
         document.getElementById('story-num').textContent = `Fragment ${count} of 10`;
         document.getElementById('story-text').textContent = state.hiddenStory;
         document.getElementById('story-card').classList.add('visible');
-        document.getElementById('message').textContent = '✨ You found the hidden word!';
+        document.getElementById('message').textContent = 'âœ¨ You found the hidden word!';
       }
     }
     state.selecting = []; render(); saveToStorage();
@@ -431,7 +379,7 @@ async function commitSelection() {
   }
 }
 
-// ─── Diagonal Guides ──────────────────────────────────────────────────────────
+// â”€â”€â”€ Diagonal Guides â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function drawDiagonals() {
   const canvas = document.getElementById('diag-canvas');
   const wrap = document.getElementById('grid-wrap');
@@ -458,7 +406,7 @@ function drawDiagonals() {
   }
 }
 
-// ─── Render Grid ──────────────────────────────────────────────────────────────
+// â”€â”€â”€ Render Grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function renderGrid() {
   const wrap = document.getElementById('grid-wrap');
   const grid = document.getElementById('grid');
@@ -502,11 +450,11 @@ function renderGrid() {
   drawDiagonals();
 }
 
-// ─── Render Word List ─────────────────────────────────────────────────────────
+// â”€â”€â”€ Render Word List â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function renderWordList() {
   const wl = document.getElementById('word-list');
   const found = state.words.filter(w => state.found.has(w)).length;
-  document.getElementById('hint-line').textContent = `${found} of ${state.words.length} found — and one more hiding...`;
+  document.getElementById('hint-line').textContent = `${found} of ${state.words.length} found â€” and one more hiding...`;
   wl.innerHTML = '';
   const cols = 4, perCol = Math.ceil(state.words.length / cols);
   for (let i = 0; i < cols; i++) {
@@ -515,7 +463,7 @@ function renderWordList() {
     for (const w of colWords) {
       const div = document.createElement('div'); div.className = 'word-row';
       if (state.found.has(w)) {
-        div.innerHTML = `<span class="check">✓</span><span class="word-strike">${w}</span>`;
+        div.innerHTML = `<span class="check">âœ“</span><span class="word-strike">${w}</span>`;
       } else if (state.showList) {
         div.innerHTML = `<span style="width:10px"></span><span class="word-revealed">${w}</span>`;
       } else {
@@ -527,13 +475,13 @@ function renderWordList() {
   }
 }
 
-// ─── Render Found ─────────────────────────────────────────────────────────────
+// â”€â”€â”€ Render Found â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function renderFound() {
   const fl = document.getElementById('found-list');
   fl.innerHTML = ''; let any = false;
   for (const w of state.found) {
     const t = document.createElement('span');
-    if (w === state.hidden) { t.className = 'found-tag is-hidden'; t.textContent = '✨ ' + w; }
+    if (w === state.hidden) { t.className = 'found-tag is-hidden'; t.textContent = 'âœ¨ ' + w; }
     else { t.className = 'found-tag is-list'; t.textContent = w; }
     fl.appendChild(t); any = true;
   }
@@ -550,14 +498,14 @@ function renderFound() {
 
 function render() { renderGrid(); renderWordList(); renderFound(); }
 
-// ─── Completion Modal ─────────────────────────────────────────────────────────
+// â”€â”€â”€ Completion Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function showCompletion() {
   const hiddenFound = state.found.has(state.hidden);
   document.getElementById('complete-title').textContent = hiddenFound
     ? 'You found everything.'
     : 'You found them all.';
   document.getElementById('complete-body').textContent = hiddenFound
-    ? 'All fifteen — and the one that was hiding, too. Ready for another?'
+    ? 'All fifteen â€” and the one that was hiding, too. Ready for another?'
     : 'Every word on the list. There\'s still one more hiding in the grid, if you want to keep looking.';
   const btns = document.getElementById('complete-btns');
   btns.innerHTML = '';
@@ -581,7 +529,7 @@ function checkCompletion() {
   if (state.words.every(w => state.found.has(w))) showCompletion();
 }
 
-// ─── Event Listeners ──────────────────────────────────────────────────────────
+// â”€â”€â”€ Event Listeners â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 document.getElementById('new-btn').addEventListener('click', newPuzzle);
 document.getElementById('toggle-btn').addEventListener('click', () => {
   state.showList = !state.showList;
@@ -600,7 +548,7 @@ document.getElementById('size-sel').addEventListener('change', newPuzzle);
 document.addEventListener('mouseup', () => { if (state.dragging) { state.dragging = false; commitSelection(); } });
 window.addEventListener('resize', () => renderGrid());
 
-// ─── Init ─────────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Init â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 if (!loadFromStorage()) newPuzzle();
 </script>
 </body>
