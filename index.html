@@ -758,7 +758,7 @@ function renderSkinPicker() {
       const prog = document.createElement('div'); prog.className = 'skin-progress';
       prog.textContent = '★'.repeat(found) + '☆'.repeat(displayTotal - found);
       card.appendChild(prog);
-    } else if (unlocked && !active) {
+    } else if (unlocked && !active && !(skin.theme && GOLD_THEMES.includes(skin.theme) && state.goldUnlocked[skin.theme])) {
       const btn = document.createElement('button'); btn.className = 'btn-sm'; btn.textContent = 'Select';
       btn.style.cssText = 'margin-top:6px;align-self:flex-start';
       btn.addEventListener('click', () => { applySkin(id); saveToStorage(); renderSkinPicker(); });
@@ -767,19 +767,24 @@ function renderSkinPicker() {
     if (unlocked && skin.theme && GOLD_THEMES.includes(skin.theme)) {
       const theme = skin.theme;
       const count = state.foundHiddenCount[theme] || 0;
-      const goldProg = document.createElement('div');
       if (state.goldUnlocked[theme]) {
+        const btn = document.createElement('button'); btn.className = 'btn-sm'; btn.textContent = 'Select';
+        btn.style.cssText = 'margin-top:6px;align-self:flex-start';
+        btn.addEventListener('click', () => { applySkin(id); saveToStorage(); renderSkinPicker(); });
+        card.appendChild(btn);
+        const goldProg = document.createElement('div');
         goldProg.className = 'skin-progress skin-progress-gold';
         goldProg.textContent = '✦ Gold tier unlocked!';
         card.appendChild(goldProg);
         const toggle = document.createElement('div'); toggle.className = 'backdrop-toggle';
         const cleanBtn = document.createElement('button'); cleanBtn.className = 'btn-sm' + (!state.backdropActive[theme] ? ' btn-active' : ''); cleanBtn.textContent = 'Clean';
-        cleanBtn.addEventListener('click', () => { state.backdropActive[theme] = false; saveToStorage(); applyBackdrop(); renderSkinPicker(); });
+        cleanBtn.addEventListener('click', () => { state.backdropActive[theme] = false; applySkin(id); saveToStorage(); renderSkinPicker(); });
         const bdBtn = document.createElement('button'); bdBtn.className = 'btn-sm' + (state.backdropActive[theme] ? ' btn-active' : ''); bdBtn.textContent = 'Backdrop';
-        bdBtn.addEventListener('click', () => { state.backdropActive[theme] = true; saveToStorage(); applyBackdrop(); renderSkinPicker(); });
+        bdBtn.addEventListener('click', () => { state.backdropActive[theme] = true; applySkin(id); saveToStorage(); renderSkinPicker(); });
         toggle.appendChild(cleanBtn); toggle.appendChild(bdBtn);
         card.appendChild(toggle);
       } else {
+        const goldProg = document.createElement('div');
         goldProg.className = 'skin-progress';
         const goldFilled = Math.max(0, count - SILVER_THRESHOLD);
         goldProg.textContent = '★'.repeat(SILVER_THRESHOLD) + '✦'.repeat(goldFilled) + '☆'.repeat(GOLD_THRESHOLD - SILVER_THRESHOLD - goldFilled);
