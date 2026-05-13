@@ -111,7 +111,14 @@
     .skin-swatch{width:13px;height:13px;border-radius:3px;border:1px solid rgba(0,0,0,0.12)}
     .skin-progress{font-size:11px;color:var(--ink3);letter-spacing:0.5px}
     .skin-progress-gold{color:var(--gold-dark);font-weight:600}
-    .backdrop-toggle{display:flex;gap:4px;margin-top:5px}
+    .backdrop-toggle{display:flex;gap:6px;align-items:center;margin-top:5px}
+    .toggle-label{font-size:12px;color:var(--ink2)}
+    .toggle-switch{position:relative;display:inline-block;width:32px;height:18px;flex-shrink:0}
+    .toggle-switch input{opacity:0;width:0;height:0;position:absolute}
+    .toggle-track{position:absolute;inset:0;background:var(--cream3);border-radius:9px;transition:background 0.2s;cursor:pointer}
+    .toggle-track::before{content:'';position:absolute;width:14px;height:14px;left:2px;top:2px;background:white;border-radius:50%;transition:transform 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2)}
+    .toggle-switch input:checked+.toggle-track{background:var(--sage)}
+    .toggle-switch input:checked+.toggle-track::before{transform:translateX(14px)}
     :root{--skin-font:'Caveat',cursive}
     body.skin-animals{--skin-font:'Nunito',sans-serif}
     body.skin-beach{--skin-font:'Quicksand',sans-serif}
@@ -713,7 +720,7 @@ function applyBackdrop() {
   const skin = SKINS[state.activeSkin];
   const theme = skin ? skin.theme : null;
   if (theme && GOLD_THEMES.includes(theme) && state.goldUnlocked[theme] && state.backdropActive[theme]) {
-    el.style.backgroundImage = `url('assets/backdrops/${theme}.jpg')`;
+    el.style.backgroundImage = `url('assets/backdrops/${theme}.png')`;
     el.classList.add('visible');
   } else {
     el.classList.remove('visible');
@@ -768,20 +775,19 @@ function renderSkinPicker() {
       const theme = skin.theme;
       const count = state.foundHiddenCount[theme] || 0;
       if (state.goldUnlocked[theme]) {
-        const btn = document.createElement('button'); btn.className = 'btn-sm'; btn.textContent = 'Select';
-        btn.style.cssText = 'margin-top:6px;align-self:flex-start';
-        btn.addEventListener('click', () => { applySkin(id); saveToStorage(); renderSkinPicker(); });
-        card.appendChild(btn);
         const goldProg = document.createElement('div');
         goldProg.className = 'skin-progress skin-progress-gold';
         goldProg.textContent = '✦ Gold tier unlocked!';
         card.appendChild(goldProg);
         const toggle = document.createElement('div'); toggle.className = 'backdrop-toggle';
-        const cleanBtn = document.createElement('button'); cleanBtn.className = 'btn-sm' + (!state.backdropActive[theme] ? ' btn-active' : ''); cleanBtn.textContent = 'Clean';
-        cleanBtn.addEventListener('click', () => { state.backdropActive[theme] = false; applySkin(id); saveToStorage(); renderSkinPicker(); });
-        const bdBtn = document.createElement('button'); bdBtn.className = 'btn-sm' + (state.backdropActive[theme] ? ' btn-active' : ''); bdBtn.textContent = 'Backdrop';
-        bdBtn.addEventListener('click', () => { state.backdropActive[theme] = true; applySkin(id); saveToStorage(); renderSkinPicker(); });
-        toggle.appendChild(cleanBtn); toggle.appendChild(bdBtn);
+        const lClean = document.createElement('span'); lClean.className = 'toggle-label'; lClean.textContent = 'Clean';
+        const lSwitch = document.createElement('label'); lSwitch.className = 'toggle-switch';
+        const chk = document.createElement('input'); chk.type = 'checkbox'; chk.checked = !!state.backdropActive[theme];
+        chk.addEventListener('change', () => { state.backdropActive[theme] = chk.checked; applySkin(id); saveToStorage(); });
+        const track = document.createElement('span'); track.className = 'toggle-track';
+        lSwitch.appendChild(chk); lSwitch.appendChild(track);
+        const lBackdrop = document.createElement('span'); lBackdrop.className = 'toggle-label'; lBackdrop.textContent = 'Backdrop';
+        toggle.appendChild(lClean); toggle.appendChild(lSwitch); toggle.appendChild(lBackdrop);
         card.appendChild(toggle);
       } else {
         const goldProg = document.createElement('div');
