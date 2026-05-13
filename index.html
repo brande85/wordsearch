@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Word Search</title>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;700&family=Nunito:wght@400;500;700&family=Quicksand:wght@400;500;700&family=Exo+2:wght@400;500;700&family=Fredoka:wght@400;500;700&family=Cinzel:wght@400;500;700&family=Cormorant+Garamond:wght@400;500;700&family=Rajdhani:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
     :root{
@@ -15,7 +15,9 @@
       --gold:#d4a847;--gold-light:#f5e9c8;--gold-dark:#8a6a1e;
     }
     body{font-family:'Caveat',cursive;background:#2a2a2a;display:flex;justify-content:center;padding:1rem;min-height:100vh}
-    #app{max-width:480px;width:100%;padding:1rem;background:var(--cream);border-radius:16px;border:1px solid var(--cream3);height:fit-content}
+    #backdrop{display:none;position:fixed;inset:0;z-index:0;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0.17;pointer-events:none}
+    #backdrop.visible{display:block}
+    #app{max-width:480px;width:100%;padding:1rem;background:var(--cream);border-radius:16px;border:1px solid var(--cream3);height:fit-content;position:relative;z-index:1}
     h1{font-size:26px;font-weight:700;color:var(--ink);margin-bottom:2px}
     .sub{font-size:15px;color:var(--ink2);font-style:italic;margin-bottom:1rem}
     .controls{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:0.75rem}
@@ -82,9 +84,81 @@
     .complete-title{font-size:22px;font-weight:700;color:var(--ink);margin-bottom:0.5rem}
     .complete-body{font-size:16px;color:var(--ink2);font-style:italic;margin-bottom:1.25rem;line-height:1.45}
     .complete-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+    .complete-unlock{font-size:14px;color:var(--gold-dark);font-style:italic;margin-bottom:1rem;display:none}
+    .complete-unlock.visible{display:block}
+    @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+    .skin-overlay{display:none;position:fixed;inset:0;z-index:50;background:rgba(0,0,0,0.55);align-items:flex-end;justify-content:center}
+    .skin-overlay.visible{display:flex}
+    .skin-sheet{display:flex;flex-direction:column;width:100%;max-width:480px;max-height:90vh;background:var(--cream);border:1px solid var(--cream3);border-bottom:none;border-radius:16px 16px 0 0;animation:slideUp 0.25s ease-out;font-family:var(--skin-font)}
+    .skin-sheet-header{padding:0.875rem 1rem 0.5rem;border-bottom:1px solid var(--cream3);flex-shrink:0}
+    .skin-sheet-title{font-size:20px;font-weight:700;color:var(--ink);font-family:var(--skin-font)}
+    .skin-sheet-body{flex:1;overflow-y:auto;padding:0.625rem;min-height:0}
+    .skin-sheet-footer{padding:0.5rem 0.75rem;border-top:1px solid var(--cream3);flex-shrink:0}
+    .skin-sheet-footer button{width:100%}
+    @media(max-width:600px){
+      .skin-overlay{align-items:stretch}
+      .skin-sheet{max-width:100%;max-height:100%;border-radius:0;border:none;height:100%}
+    }
+    .skin-list{display:flex;flex-direction:column;gap:6px}
+    .skin-card{background:var(--cream2);border:1px solid var(--cream3);border-radius:8px;padding:0.4rem 0.625rem;display:flex;flex-direction:column;gap:2px}
+    .skin-card.skin-active{border-color:var(--sage);background:var(--sage-light)}
+    .skin-card.skin-locked{opacity:0.6}
+    .skin-card-header{display:flex;justify-content:space-between;align-items:baseline}
+    .skin-card-name{font-size:15px;font-weight:700;color:var(--ink)}
+    .skin-card-status{font-size:12px;color:var(--ink3);font-style:italic}
+    .skin-card-sub{font-size:12px;color:var(--ink2)}
+    .skin-swatches{display:flex;gap:4px;margin:2px 0}
+    .skin-swatch{width:13px;height:13px;border-radius:3px;border:1px solid rgba(0,0,0,0.12)}
+    .skin-progress{font-size:11px;color:var(--ink3);letter-spacing:0.5px}
+    .skin-progress-gold{color:var(--gold-dark);font-weight:600}
+    .backdrop-toggle{display:flex;gap:4px;margin-top:5px}
+    :root{--skin-font:'Caveat',cursive}
+    body.skin-animals{--skin-font:'Nunito',sans-serif}
+    body.skin-beach{--skin-font:'Quicksand',sans-serif}
+    body.skin-space{--skin-font:'Exo 2',sans-serif}
+    body.skin-food{--skin-font:'Fredoka',sans-serif}
+    body.skin-tarot{--skin-font:'Cinzel',serif}
+    body.skin-fantasy{--skin-font:'Cormorant Garamond',serif}
+    body.skin-scifi{--skin-font:'Rajdhani',sans-serif}
+    body.skin-animals{background:#0f1f0a;font-family:'Nunito',sans-serif;--cream:#f2f7ed;--cream2:#e4ede0;--cream3:#bccfb4;--ink:#1b3019;--ink2:#3d5c38;--ink3:#7a9e72;--sage:#5c8c55;--sage-light:#c0d9b8;--sage-dark:#2b5c25;--terra:#c47c30;--terra-light:#f0dbb8;--terra-dark:#7a4a10;--gold:#b8860b;--gold-light:#f5e8a0;--gold-dark:#6b4800}
+    body.skin-animals button,body.skin-animals select{background:#1a4018 !important;font-family:'Nunito',sans-serif !important}
+    body.skin-animals button:hover,body.skin-animals select:hover{background:#2a6028 !important}
+    body.skin-animals button.btn-active{background:#2b5c25 !important}
+    body.skin-animals h1,body.skin-animals .sub,body.skin-animals .cell,body.skin-animals .found-tag,body.skin-animals .complete-title,body.skin-animals .complete-body,body.skin-animals .word-blanks,body.skin-animals .word-strike,body.skin-animals .word-revealed,body.skin-animals .story-text,body.skin-animals .story-num,body.skin-animals .hint-line,body.skin-animals .message,body.skin-animals .wl-header span,body.skin-animals .found-panel h3{font-family:'Nunito',sans-serif !important}
+    body.skin-beach{background:#1a5870;font-family:'Quicksand',sans-serif;--cream:#fff8e8;--cream2:#faefd4;--cream3:#e0d0a0;--ink:#1a3a5c;--ink2:#2a5a7a;--ink3:#5a90b0;--sage:#2a8a7a;--sage-light:#a8d8d0;--sage-dark:#0a5a4a;--terra:#e05840;--terra-light:#f8d0c0;--terra-dark:#a02810;--gold:#f0a820;--gold-light:#fce8a0;--gold-dark:#9a6800}
+    body.skin-beach button,body.skin-beach select{background:#1a5070 !important;font-family:'Quicksand',sans-serif !important}
+    body.skin-beach button:hover,body.skin-beach select:hover{background:#2a6a90 !important}
+    body.skin-beach button.btn-active{background:#0a5a4a !important}
+    body.skin-beach h1,body.skin-beach .sub,body.skin-beach .cell,body.skin-beach .found-tag,body.skin-beach .complete-title,body.skin-beach .complete-body,body.skin-beach .word-blanks,body.skin-beach .word-strike,body.skin-beach .word-revealed,body.skin-beach .story-text,body.skin-beach .story-num,body.skin-beach .hint-line,body.skin-beach .message,body.skin-beach .wl-header span,body.skin-beach .found-panel h3{font-family:'Quicksand',sans-serif !important}
+    body.skin-space{background:#030510;font-family:'Exo 2',sans-serif;--cream:#0c1025;--cream2:#131828;--cream3:#1e2845;--ink:#c0d0e8;--ink2:#8090b8;--ink3:#6878a8;--sage:#00a8c0;--sage-light:#002838;--sage-dark:#00d8f0;--terra:#b848d0;--terra-light:#1a0828;--terra-dark:#d878f0;--gold:#c09818;--gold-light:#181408;--gold-dark:#f0c830}
+    body.skin-space button,body.skin-space select{background:#0c1840 !important;font-family:'Exo 2',sans-serif !important}
+    body.skin-space button:hover,body.skin-space select:hover{background:#142050 !important}
+    body.skin-space button.btn-active{background:#002838 !important}
+    body.skin-space h1,body.skin-space .sub,body.skin-space .cell,body.skin-space .found-tag,body.skin-space .complete-title,body.skin-space .complete-body,body.skin-space .word-blanks,body.skin-space .word-strike,body.skin-space .word-revealed,body.skin-space .story-text,body.skin-space .story-num,body.skin-space .hint-line,body.skin-space .message,body.skin-space .wl-header span,body.skin-space .found-panel h3{font-family:'Exo 2',sans-serif !important}
+    body.skin-food{background:#5c1a0a;font-family:'Fredoka',sans-serif;--cream:#fef9f0;--cream2:#faf0dc;--cream3:#e8d5a8;--ink:#3a1a08;--ink2:#6a3818;--ink3:#a06840;--sage:#6a8c30;--sage-light:#d8e8b0;--sage-dark:#3a5010;--terra:#c83820;--terra-light:#f8c8b0;--terra-dark:#881808;--gold:#e09010;--gold-light:#fce8a0;--gold-dark:#8a5808}
+    body.skin-food button,body.skin-food select{background:#6a2010 !important;font-family:'Fredoka',sans-serif !important}
+    body.skin-food button:hover,body.skin-food select:hover{background:#8a3010 !important}
+    body.skin-food button.btn-active{background:#3a5010 !important}
+    body.skin-food h1,body.skin-food .sub,body.skin-food .cell,body.skin-food .found-tag,body.skin-food .complete-title,body.skin-food .complete-body,body.skin-food .word-blanks,body.skin-food .word-strike,body.skin-food .word-revealed,body.skin-food .story-text,body.skin-food .story-num,body.skin-food .hint-line,body.skin-food .message,body.skin-food .wl-header span,body.skin-food .found-panel h3{font-family:'Fredoka',sans-serif !important}
+    body.skin-tarot{background:#0f0820;font-family:'Cinzel',serif;--cream:#f5f0ff;--cream2:#ebe5f8;--cream3:#c8b8e8;--ink:#1a0838;--ink2:#4a2880;--ink3:#8060b0;--sage:#8040c0;--sage-light:#e0c8f8;--sage-dark:#4a1890;--terra:#c04080;--terra-light:#f8d0e8;--terra-dark:#801028;--gold:#c89020;--gold-light:#f8e8b0;--gold-dark:#6a4800}
+    body.skin-tarot button,body.skin-tarot select{background:#2a1060 !important;font-family:'Cinzel',serif !important}
+    body.skin-tarot button:hover,body.skin-tarot select:hover{background:#3a1880 !important}
+    body.skin-tarot button.btn-active{background:#4a1890 !important}
+    body.skin-tarot h1,body.skin-tarot .sub,body.skin-tarot .cell,body.skin-tarot .found-tag,body.skin-tarot .complete-title,body.skin-tarot .complete-body,body.skin-tarot .word-blanks,body.skin-tarot .word-strike,body.skin-tarot .word-revealed,body.skin-tarot .story-text,body.skin-tarot .story-num,body.skin-tarot .hint-line,body.skin-tarot .message,body.skin-tarot .wl-header span,body.skin-tarot .found-panel h3{font-family:'Cinzel',serif !important}
+    body.skin-fantasy{background:#0e1220;font-family:'Cormorant Garamond',serif;--cream:#f0ede8;--cream2:#e5e0d5;--cream3:#c8c0b0;--ink:#1a1830;--ink2:#3a3060;--ink3:#7068a0;--sage:#4a7a3a;--sage-light:#c0d8b0;--sage-dark:#2a5020;--terra:#c05830;--terra-light:#f8d5b8;--terra-dark:#882010;--gold:#d4a020;--gold-light:#f8e8a0;--gold-dark:#7a5800}
+    body.skin-fantasy button,body.skin-fantasy select{background:#1a1838 !important;font-family:'Cormorant Garamond',serif !important}
+    body.skin-fantasy button:hover,body.skin-fantasy select:hover{background:#2a2858 !important}
+    body.skin-fantasy button.btn-active{background:#2a5020 !important}
+    body.skin-fantasy h1,body.skin-fantasy .sub,body.skin-fantasy .cell,body.skin-fantasy .found-tag,body.skin-fantasy .complete-title,body.skin-fantasy .complete-body,body.skin-fantasy .word-blanks,body.skin-fantasy .word-strike,body.skin-fantasy .word-revealed,body.skin-fantasy .story-text,body.skin-fantasy .story-num,body.skin-fantasy .hint-line,body.skin-fantasy .message,body.skin-fantasy .wl-header span,body.skin-fantasy .found-panel h3{font-family:'Cormorant Garamond',serif !important}
+    body.skin-scifi{background:#1a2838;font-family:'Rajdhani',sans-serif;--cream:#f0f4f8;--cream2:#e0e8f0;--cream3:#b0c0d0;--ink:#101820;--ink2:#283848;--ink3:#506070;--sage:#0070b0;--sage-light:#b0d8f0;--sage-dark:#003870;--terra:#d04010;--terra-light:#f8d0b8;--terra-dark:#901808;--gold:#c08000;--gold-light:#f8e8a0;--gold-dark:#704800}
+    body.skin-scifi button,body.skin-scifi select{background:#101828 !important;font-family:'Rajdhani',sans-serif !important}
+    body.skin-scifi button:hover,body.skin-scifi select:hover{background:#182838 !important}
+    body.skin-scifi button.btn-active{background:#003870 !important}
+    body.skin-scifi h1,body.skin-scifi .sub,body.skin-scifi .cell,body.skin-scifi .found-tag,body.skin-scifi .complete-title,body.skin-scifi .complete-body,body.skin-scifi .word-blanks,body.skin-scifi .word-strike,body.skin-scifi .word-revealed,body.skin-scifi .story-text,body.skin-scifi .story-num,body.skin-scifi .hint-line,body.skin-scifi .message,body.skin-scifi .wl-header span,body.skin-scifi .found-panel h3{font-family:'Rajdhani',sans-serif !important}
   </style>
 </head>
 <body>
+<div id="backdrop"></div>
 <div id="app">
   <h1>Word Search</h1>
   <p class=”sub”>Find everything &mdash; then keep looking...</p>
@@ -117,16 +191,13 @@
   </div>
   <div class="controls-row">
     <button class="btn-sm" id="diag-toggle">&#x27CB; Diagonal guides: off</button>
+    <button class="btn-sm" id="skin-btn">Choose Skin</button>
   </div>
   <div id="grid-wrap">
     <canvas id="diag-canvas"></canvas>
     <div id="grid"></div>
   </div>
   <p class="message" id="message"></p>
-  <div class="story-card" id="story-card">
-    <p class="story-num" id="story-num"></p>
-    <p class="story-text" id="story-text"></p>
-  </div>
   <div class="panel">
     <div class="wl-header">
       <span>Words to find</span>
@@ -139,34 +210,119 @@
     <h3>Found</h3>
     <div class="found-tags" id="found-list"><span style="font-size:15px;color:#9c8f82;font-style:italic">Nothing yet...</span></div>
   </div>
+  <div class="story-card" id="story-card">
+    <p class="story-num" id="story-num"></p>
+    <p class="story-text" id="story-text"></p>
+  </div>
 </div>
 
 <div id="complete-modal" class="complete-overlay" role="dialog" aria-modal="true">
   <div class="complete-card">
     <p class="complete-title" id="complete-title"></p>
     <p class="complete-body" id="complete-body"></p>
+    <p class="complete-unlock" id="complete-unlock"></p>
     <div class="complete-btns" id="complete-btns"></div>
+  </div>
+</div>
+
+<div id="skin-modal" class="skin-overlay" role="dialog" aria-modal="true">
+  <div class="skin-sheet">
+    <div class="skin-sheet-header">
+      <p class="skin-sheet-title">Choose a Skin</p>
+    </div>
+    <div class="skin-sheet-body">
+      <div class="skin-list" id="skin-list"></div>
+    </div>
+    <div class="skin-sheet-footer">
+      <button id="skin-close-btn">Close</button>
+    </div>
   </div>
 </div>
 
 <script src="themes.js"></script>
 <script>
-// â”€â”€â”€ Constants â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Constants ──────────────────────────────────────────────────────────
 const MIN_LEN = 4;
 const MAX_LEN = 6;
 const WORDS_PER_SIZE = {10: 10, 12: 15, 15: 20};
 const DIRS = [[0,1],[1,0],[0,-1],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]];
 const STORAGE_KEY = 'wordsearch_v1';
+const GOLD_THEMES = ['space'];
+const SILVER_THRESHOLD = 10;
+const GOLD_THRESHOLD = 20;
+const THEME_NAMES = {
+  animals: 'Animals', beach: 'Beach', space: 'Space',
+  food: 'Food', tarot: 'Tarot', fantasy: 'Fantasy', scifi: 'Science Fiction'
+};
+const SKINS = {
+  default: {
+    name: 'Classic',
+    description: 'The original look',
+    theme: null,
+    font: "'Caveat', cursive",
+    swatches: ['#f7f3eb', '#3b3228', '#7a9e7e', '#d4a847'],
+  },
+  animals: {
+    name: 'Wild',
+    description: 'Animals theme — find all 10 fragments to unlock',
+    theme: 'animals',
+    font: "'Nunito', sans-serif",
+    swatches: ['#0f1f0a', '#f2f7ed', '#5c8c55', '#b8860b'],
+  },
+  beach: {
+    name: 'Tide',
+    description: 'Beach theme — find all 10 fragments to unlock',
+    theme: 'beach',
+    font: "'Quicksand', sans-serif",
+    swatches: ['#1a5870', '#fff8e8', '#2a8a7a', '#f0a820'],
+  },
+  space: {
+    name: 'Cosmos',
+    description: 'Space theme — find all 10 fragments to unlock',
+    theme: 'space',
+    font: "'Exo 2', sans-serif",
+    swatches: ['#030510', '#0c1025', '#00a8c0', '#f0c830'],
+  },
+  food: {
+    name: 'Harvest',
+    description: 'Food theme — find all 10 fragments to unlock',
+    theme: 'food',
+    font: "'Fredoka', sans-serif",
+    swatches: ['#5c1a0a', '#fef9f0', '#6a8c30', '#e09010'],
+  },
+  tarot: {
+    name: 'Arcana',
+    description: 'Tarot theme — find all 10 fragments to unlock',
+    theme: 'tarot',
+    font: "'Cinzel', serif",
+    swatches: ['#0f0820', '#f5f0ff', '#8040c0', '#c89020'],
+  },
+  fantasy: {
+    name: 'Enchanted',
+    description: 'Fantasy theme — find all 10 fragments to unlock',
+    theme: 'fantasy',
+    font: "'Cormorant Garamond', serif",
+    swatches: ['#0e1220', '#f0ede8', '#4a7a3a', '#d4a020'],
+  },
+  scifi: {
+    name: 'Terminal',
+    description: 'Sci-Fi theme — find all 10 fragments to unlock',
+    theme: 'scifi',
+    font: "'Rajdhani', sans-serif",
+    swatches: ['#1a2838', '#f0f4f8', '#0070b0', '#c08000'],
+  },
+};
 
-// â”€â”€â”€ State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── State ──────────────────────────────────────────────────────────
 let state = {
   grid: [], size: 12, words: [], hidden: '', hiddenStory: '',
   placed: [], selecting: [], found: new Set(), bonus: [],
   showList: false, dragging: false, usedHidden: {},
-  checking: new Set(), foundHiddenCount: {}, diagOn: false, cellSize: 0
+  checking: new Set(), foundHiddenCount: {}, diagOn: false, cellSize: 0,
+  hiddenCredited: false, activeSkin: 'default', goldUnlocked: {}, backdropActive: {}
 };
 
-// â”€â”€â”€ Utilities â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Utilities ──────────────────────────────────────────────────────────
 function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
 function shuffle(arr) {
@@ -178,23 +334,15 @@ function shuffle(arr) {
   return a;
 }
 
-// â”€â”€â”€ Storage â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Storage ──────────────────────────────────────────────────────────
 function saveToStorage() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({
       usedHidden: state.usedHidden,
       foundHiddenCount: state.foundHiddenCount,
-      diagOn: state.diagOn,
-      theme: document.getElementById('theme-sel').value,
-      size: state.size,
-      grid: state.grid,
-      words: state.words,
-      placed: state.placed,
-      hidden: state.hidden,
-      hiddenStory: state.hiddenStory,
-      found: [...state.found],
-      bonus: state.bonus,
-      showList: state.showList,
+      goldUnlocked: state.goldUnlocked,
+      backdropActive: state.backdropActive,
+      activeSkin: state.activeSkin,
     }));
   } catch {}
 }
@@ -202,40 +350,17 @@ function saveToStorage() {
 function loadFromStorage() {
   try {
     const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
-    if (!data || !Array.isArray(data.grid) || !data.grid.length) return false;
-    document.getElementById('theme-sel').value = data.theme;
-    document.getElementById('size-sel').value = String(data.size);
-    Object.assign(state, {
-      usedHidden: data.usedHidden || {},
-      foundHiddenCount: data.foundHiddenCount || {},
-      diagOn: !!data.diagOn,
-      size: data.size,
-      grid: data.grid,
-      words: data.words,
-      placed: data.placed,
-      hidden: data.hidden,
-      hiddenStory: data.hiddenStory,
-      found: new Set(data.found || []),
-      bonus: data.bonus || [],
-      showList: !!data.showList,
-      selecting: [], dragging: false, checking: new Set(),
-    });
-    const diagBtn = document.getElementById('diag-toggle');
-    diagBtn.textContent = state.diagOn ? '⟋ Diagonal guides: on' : '⟋ Diagonal guides: off';
-    if (state.diagOn) diagBtn.classList.add('btn-active'); else diagBtn.classList.remove('btn-active');
-    document.getElementById('toggle-btn').textContent = state.showList ? 'Hide list' : 'Show list';
-    if (state.found.has(state.hidden)) {
-      const count = state.foundHiddenCount[data.theme] || 1;
-      document.getElementById('story-num').textContent = `Fragment ${count} of 10`;
-      document.getElementById('story-text').textContent = state.hiddenStory;
-      document.getElementById('story-card').classList.add('visible');
-    }
-    render();
-    return true;
-  } catch { return false; }
+    if (!data) return;
+    state.usedHidden = data.usedHidden || {};
+    state.foundHiddenCount = data.foundHiddenCount || {};
+    state.goldUnlocked = data.goldUnlocked || {};
+    state.backdropActive = data.backdropActive || {};
+    state.activeSkin = data.activeSkin || 'default';
+    applySkin(state.activeSkin);
+  } catch {}
 }
 
-// â”€â”€â”€ Grid Building â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Grid Building ──────────────────────────────────────────────────────────
 function canPlace(grid, word, r, c, dr, dc) {
   for (let i = 0; i < word.length; i++) {
     const nr = r + dr * i, nc = c + dc * i;
@@ -280,27 +405,35 @@ function pickHidden(theme) {
   let available = pool.filter(h => !used.includes(h.word));
   if (!available.length) { available = [...pool]; state.usedHidden[theme] = []; }
   const chosen = pick(available);
-  state.usedHidden[theme] = [...(state.usedHidden[theme] || []), chosen.word];
   return chosen;
 }
 
-// â”€â”€â”€ Puzzle Setup â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Puzzle Setup ──────────────────────────────────────────────────────────
 function newPuzzle() {
   const theme = document.getElementById('theme-sel').value;
   const size = parseInt(document.getElementById('size-sel').value);
   const pool = THEMES[theme].words.filter(w => w.length >= MIN_LEN && w.length <= MAX_LEN);
-  const target = WORDS_PER_SIZE[size] ?? 15;
-  const candidates = shuffle(pool).slice(0, target + 3);
   const hiddenEntry = pickHidden(theme);
-  const { grid, placed } = buildGrid(size, candidates, hiddenEntry.word);
-  const placedList = placed.filter(p => p.word !== hiddenEntry.word).slice(0, target);
+  const baseTarget = WORDS_PER_SIZE[size] ?? 15;
+  let grid, placed;
+  outer: for (let target = baseTarget; target > 0; target--) {
+    const candidates = shuffle(pool).slice(0, target);
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const result = buildGrid(size, candidates, hiddenEntry.word);
+      const placedWords = new Set(result.placed.map(p => p.word));
+      if (candidates.every(w => placedWords.has(w)) && placedWords.has(hiddenEntry.word)) {
+        grid = result.grid; placed = result.placed; break outer;
+      }
+    }
+  }
+  const placedList = placed.filter(p => p.word !== hiddenEntry.word);
   const actualPlaced = [...placedList, ...placed.filter(p => p.word === hiddenEntry.word)];
   const actualWords = placedList.map(p => p.word).sort();
   state = {
     ...state, grid, size, words: actualWords,
     hidden: hiddenEntry.word, hiddenStory: hiddenEntry.story,
     placed: actualPlaced, selecting: [], found: new Set(), bonus: [],
-    showList: false, checking: new Set()
+    showList: false, checking: new Set(), hiddenCredited: false
   };
   document.getElementById('toggle-btn').textContent = 'Show list';
   document.getElementById('message').textContent = '';
@@ -310,7 +443,7 @@ function newPuzzle() {
   saveToStorage();
 }
 
-// â”€â”€â”€ Selection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Selection ──────────────────────────────────────────────────────────
 function cellKey(r, c) { return r + ',' + c; }
 
 function getSelection() {
@@ -330,7 +463,7 @@ function getSelection() {
   return cells;
 }
 
-// â”€â”€â”€ Dictionary â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Dictionary ──────────────────────────────────────────────────────────
 async function checkDictionary(word) {
   try {
     const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word.toLowerCase()}`);
@@ -338,7 +471,7 @@ async function checkDictionary(word) {
   } catch { return false; }
 }
 
-// â”€â”€â”€ Commit Selection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Commit Selection ──────────────────────────────────────────────────────────
 async function commitSelection() {
   const cells = getSelection();
   if (cells.length < 2) { state.selecting = []; renderGrid(); return; }
@@ -351,17 +484,17 @@ async function commitSelection() {
       state.found.add(match.word);
       newlyFound = true;
       if (match.word === state.hidden) {
-        const theme = document.getElementById('theme-sel').value;
-        state.foundHiddenCount[theme] = (state.foundHiddenCount[theme] || 0) + 1;
-        const count = state.foundHiddenCount[theme];
-        document.getElementById('story-num').textContent = `Fragment ${count} of 10`;
+        document.getElementById('story-num').textContent = 'Complete the puzzle to unlock this fragment';
         document.getElementById('story-text').textContent = state.hiddenStory;
         document.getElementById('story-card').classList.add('visible');
-        document.getElementById('message').textContent = 'âœ¨ You found the hidden word!';
+        document.getElementById('message').textContent = '✨ You found the hidden word!';
       }
     }
     state.selecting = []; render(); saveToStorage();
-    if (newlyFound && match.word !== state.hidden) checkCompletion();
+    if (newlyFound) {
+      if (match.word !== state.hidden) checkCompletion();
+      else if (state.words.every(w => state.found.has(w))) showCompletion(creditHiddenIfEarned());
+    }
   } else {
     const candidate = word.length >= wordRev.length ? word : wordRev;
     state.selecting = []; renderGrid();
@@ -379,7 +512,7 @@ async function commitSelection() {
   }
 }
 
-// â”€â”€â”€ Diagonal Guides â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Diagonal Guides ──────────────────────────────────────────────────────────
 function drawDiagonals() {
   const canvas = document.getElementById('diag-canvas');
   const wrap = document.getElementById('grid-wrap');
@@ -406,7 +539,7 @@ function drawDiagonals() {
   }
 }
 
-// â”€â”€â”€ Render Grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Render Grid ──────────────────────────────────────────────────────────
 function renderGrid() {
   const wrap = document.getElementById('grid-wrap');
   const grid = document.getElementById('grid');
@@ -450,11 +583,11 @@ function renderGrid() {
   drawDiagonals();
 }
 
-// â”€â”€â”€ Render Word List â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Render Word List ──────────────────────────────────────────────────────────
 function renderWordList() {
   const wl = document.getElementById('word-list');
   const found = state.words.filter(w => state.found.has(w)).length;
-  document.getElementById('hint-line').textContent = `${found} of ${state.words.length} found â€” and one more hiding...`;
+  document.getElementById('hint-line').textContent = `${found} of ${state.words.length} found — and one more hiding...`;
   wl.innerHTML = '';
   const cols = 4, perCol = Math.ceil(state.words.length / cols);
   for (let i = 0; i < cols; i++) {
@@ -463,7 +596,7 @@ function renderWordList() {
     for (const w of colWords) {
       const div = document.createElement('div'); div.className = 'word-row';
       if (state.found.has(w)) {
-        div.innerHTML = `<span class="check">âœ“</span><span class="word-strike">${w}</span>`;
+        div.innerHTML = `<span class=”check”>✓</span><span class=”word-strike”>${w}</span>`;
       } else if (state.showList) {
         div.innerHTML = `<span style="width:10px"></span><span class="word-revealed">${w}</span>`;
       } else {
@@ -475,13 +608,13 @@ function renderWordList() {
   }
 }
 
-// â”€â”€â”€ Render Found â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Render Found ──────────────────────────────────────────────────────────
 function renderFound() {
   const fl = document.getElementById('found-list');
   fl.innerHTML = ''; let any = false;
   for (const w of state.found) {
     const t = document.createElement('span');
-    if (w === state.hidden) { t.className = 'found-tag is-hidden'; t.textContent = 'âœ¨ ' + w; }
+    if (w === state.hidden) { t.className = 'found-tag is-hidden'; t.textContent = '✨ ' + w; }
     else { t.className = 'found-tag is-list'; t.textContent = w; }
     fl.appendChild(t); any = true;
   }
@@ -498,15 +631,25 @@ function renderFound() {
 
 function render() { renderGrid(); renderWordList(); renderFound(); }
 
-// â”€â”€â”€ Completion Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-function showCompletion() {
+// ── Completion Modal ──────────────────────────────────────────────────────────
+function showCompletion({ unlockedSkin = null, unlockedGold = null } = {}) {
   const hiddenFound = state.found.has(state.hidden);
   document.getElementById('complete-title').textContent = hiddenFound
     ? 'You found everything.'
     : 'You found them all.';
   document.getElementById('complete-body').textContent = hiddenFound
-    ? 'All fifteen â€” and the one that was hiding, too. Ready for another?'
+    ? 'All fifteen — and the one that was hiding, too. Ready for another?'
     : 'Every word on the list. There\'s still one more hiding in the grid, if you want to keep looking.';
+  const unlockEl = document.getElementById('complete-unlock');
+  if (unlockedGold) {
+    unlockEl.textContent = `🌟 Gold tier unlocked for ${unlockedGold}!`;
+    unlockEl.classList.add('visible');
+  } else if (unlockedSkin) {
+    unlockEl.textContent = `✨ You've unlocked the ${unlockedSkin} skin!`;
+    unlockEl.classList.add('visible');
+  } else {
+    unlockEl.classList.remove('visible');
+  }
   const btns = document.getElementById('complete-btns');
   btns.innerHTML = '';
   if (!hiddenFound) {
@@ -525,11 +668,139 @@ function showCompletion() {
   document.getElementById('complete-modal').classList.add('visible');
 }
 
-function checkCompletion() {
-  if (state.words.every(w => state.found.has(w))) showCompletion();
+function creditHiddenIfEarned() {
+  if (state.hiddenCredited) return {};
+  if (!state.found.has(state.hidden)) return {};
+  if (!state.words.every(w => state.found.has(w))) return {};
+  const theme = document.getElementById('theme-sel').value;
+  const count = (state.foundHiddenCount[theme] || 0) + 1;
+  state.foundHiddenCount[theme] = count;
+  state.usedHidden[theme] = [...(state.usedHidden[theme] || []), state.hidden];
+  state.hiddenCredited = true;
+  const isGoldTier = GOLD_THEMES.includes(theme);
+  const displayTotal = isGoldTier ? GOLD_THRESHOLD : SILVER_THRESHOLD;
+  document.getElementById('story-num').textContent = `Fragment ${count} of ${displayTotal}`;
+  updateDropdownStars();
+  saveToStorage();
+  const skinId = Object.keys(SKINS).find(id => SKINS[id].theme === theme);
+  const skinName = skinId ? SKINS[skinId].name : null;
+  let unlockedSkin = null, unlockedGold = null;
+  if (skinName && count === SILVER_THRESHOLD) unlockedSkin = skinName;
+  if (isGoldTier && count === GOLD_THRESHOLD && !state.goldUnlocked[theme]) {
+    state.goldUnlocked[theme] = true;
+    saveToStorage();
+    unlockedGold = skinName;
+  }
+  return { unlockedSkin, unlockedGold };
 }
 
-// â”€â”€â”€ Event Listeners â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+function checkCompletion() {
+  if (state.words.every(w => state.found.has(w))) {
+    showCompletion(creditHiddenIfEarned());
+  }
+}
+
+// ── Event Listeners ──────────────────────────────────────────────────────────
+function isSkinUnlocked(skinId) {
+  const skin = SKINS[skinId];
+  if (!skin.theme) return true;
+  const total = THEMES[skin.theme].hidden.filter(h => h.word.length >= MIN_LEN && h.word.length <= MAX_LEN).length;
+  return (state.foundHiddenCount[skin.theme] || 0) >= total;
+}
+
+function applyBackdrop() {
+  const el = document.getElementById('backdrop');
+  const skin = SKINS[state.activeSkin];
+  const theme = skin ? skin.theme : null;
+  if (theme && GOLD_THEMES.includes(theme) && state.goldUnlocked[theme] && state.backdropActive[theme]) {
+    el.style.backgroundImage = `url('assets/backdrops/${theme}.jpg')`;
+    el.classList.add('visible');
+  } else {
+    el.classList.remove('visible');
+    el.style.backgroundImage = '';
+  }
+}
+
+function applySkin(skinId) {
+  document.body.className = document.body.className.replace(/\bskin-\S+/g, '').trim();
+  if (skinId && skinId !== 'default') document.body.classList.add('skin-' + skinId);
+  state.activeSkin = skinId || 'default';
+  applyBackdrop();
+}
+
+function renderSkinPicker() {
+  const list = document.getElementById('skin-list');
+  list.innerHTML = '';
+  for (const [id, skin] of Object.entries(SKINS)) {
+    const unlocked = isSkinUnlocked(id);
+    const active = state.activeSkin === id;
+    const card = document.createElement('div');
+    card.className = 'skin-card' + (active ? ' skin-active' : '') + (unlocked ? '' : ' skin-locked');
+    const hdr = document.createElement('div'); hdr.className = 'skin-card-header';
+    const nameEl = document.createElement('span'); nameEl.className = 'skin-card-name'; nameEl.textContent = skin.name;
+    const statusEl = document.createElement('span'); statusEl.className = 'skin-card-status';
+    if (active) statusEl.textContent = '● Active';
+    else if (!unlocked) statusEl.textContent = '🔒 Locked';
+    hdr.appendChild(nameEl); hdr.appendChild(statusEl);
+    card.appendChild(hdr);
+    const sub = document.createElement('div'); sub.className = 'skin-card-sub'; sub.textContent = skin.description;
+    card.appendChild(sub);
+    const swatches = document.createElement('div'); swatches.className = 'skin-swatches';
+    for (const color of skin.swatches) {
+      const s = document.createElement('div'); s.className = 'skin-swatch'; s.style.background = color;
+      swatches.appendChild(s);
+    }
+    card.appendChild(swatches);
+    if (!unlocked && skin.theme) {
+      const isGoldTier = GOLD_THEMES.includes(skin.theme);
+      const displayTotal = isGoldTier ? GOLD_THRESHOLD : SILVER_THRESHOLD;
+      const found = state.foundHiddenCount[skin.theme] || 0;
+      const prog = document.createElement('div'); prog.className = 'skin-progress';
+      prog.textContent = '★'.repeat(found) + '☆'.repeat(displayTotal - found);
+      card.appendChild(prog);
+    } else if (unlocked && !active) {
+      const btn = document.createElement('button'); btn.className = 'btn-sm'; btn.textContent = 'Select';
+      btn.style.cssText = 'margin-top:6px;align-self:flex-start';
+      btn.addEventListener('click', () => { applySkin(id); saveToStorage(); renderSkinPicker(); });
+      card.appendChild(btn);
+    }
+    if (unlocked && skin.theme && GOLD_THEMES.includes(skin.theme)) {
+      const theme = skin.theme;
+      const count = state.foundHiddenCount[theme] || 0;
+      const goldProg = document.createElement('div');
+      if (state.goldUnlocked[theme]) {
+        goldProg.className = 'skin-progress skin-progress-gold';
+        goldProg.textContent = '✦ Gold tier unlocked!';
+        card.appendChild(goldProg);
+        const toggle = document.createElement('div'); toggle.className = 'backdrop-toggle';
+        const cleanBtn = document.createElement('button'); cleanBtn.className = 'btn-sm' + (!state.backdropActive[theme] ? ' btn-active' : ''); cleanBtn.textContent = 'Clean';
+        cleanBtn.addEventListener('click', () => { state.backdropActive[theme] = false; saveToStorage(); applyBackdrop(); renderSkinPicker(); });
+        const bdBtn = document.createElement('button'); bdBtn.className = 'btn-sm' + (state.backdropActive[theme] ? ' btn-active' : ''); bdBtn.textContent = 'Backdrop';
+        bdBtn.addEventListener('click', () => { state.backdropActive[theme] = true; saveToStorage(); applyBackdrop(); renderSkinPicker(); });
+        toggle.appendChild(cleanBtn); toggle.appendChild(bdBtn);
+        card.appendChild(toggle);
+      } else {
+        goldProg.className = 'skin-progress';
+        const goldFilled = Math.max(0, count - SILVER_THRESHOLD);
+        goldProg.textContent = '★'.repeat(SILVER_THRESHOLD) + '✦'.repeat(goldFilled) + '☆'.repeat(GOLD_THRESHOLD - SILVER_THRESHOLD - goldFilled);
+        card.appendChild(goldProg);
+      }
+    }
+    list.appendChild(card);
+  }
+}
+
+function updateDropdownStars() {
+  const sel = document.getElementById('theme-sel');
+  for (const opt of sel.options) {
+    const theme = opt.value;
+    if (!THEMES[theme]) continue;
+    const skinId = Object.keys(SKINS).find(id => SKINS[id].theme === theme);
+    const unlocked = skinId && isSkinUnlocked(skinId);
+    opt.textContent = THEME_NAMES[theme] + (unlocked ? ' ★' : '');
+  }
+}
+
 document.getElementById('new-btn').addEventListener('click', newPuzzle);
 document.getElementById('toggle-btn').addEventListener('click', () => {
   state.showList = !state.showList;
@@ -547,9 +818,23 @@ document.getElementById('theme-sel').addEventListener('change', newPuzzle);
 document.getElementById('size-sel').addEventListener('change', newPuzzle);
 document.addEventListener('mouseup', () => { if (state.dragging) { state.dragging = false; commitSelection(); } });
 window.addEventListener('resize', () => renderGrid());
+document.getElementById('skin-btn').addEventListener('click', () => {
+  renderSkinPicker();
+  document.getElementById('skin-modal').classList.add('visible');
+  requestAnimationFrame(() => {
+    const active = document.querySelector('#skin-list .skin-active');
+    if (active) active.scrollIntoView({ block: 'nearest', behavior: 'instant' });
+  });
+});
+document.getElementById('skin-close-btn').addEventListener('click', () => {
+  document.getElementById('skin-modal').classList.remove('visible');
+});
 
-// â”€â”€â”€ Init â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-if (!loadFromStorage()) newPuzzle();
+// ── Init ──────────────────────────────────────────────────────────
+loadFromStorage();
+applySkin(state.activeSkin);
+newPuzzle();
+updateDropdownStars();
 </script>
 </body>
 </html>
