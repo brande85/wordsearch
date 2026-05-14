@@ -9,7 +9,9 @@ const THEMES = {
       'FROG','HAWK','HARE','IBIS','KITE','LAMB','LYNX','MOLE','MOTH','MULE',
       'NEWT','PONY','TOAD','VOLE','WREN','BISON','CRANE','DINGO','EAGLE','GECKO',
       'HERON','KOALA','LEMUR','OTTER','PANDA','QUAIL','RAVEN','SNAKE','STORK','STOAT','VIXEN',
-      'BADGER','MAGPIE','OSPREY','RABBIT','SALMON','THRUSH','WEASEL','BEAVER','FERRET'
+      'BADGER','MAGPIE','OSPREY','RABBIT','SALMON','THRUSH','WEASEL','BEAVER','FERRET',
+      'CAMEL','FINCH','HYENA','LLAMA','MACAW','MOOSE','ROBIN','SHREW','SKUNK','SLOTH',
+      'SNAIL','SWIFT','TAPIR','TROUT','ZEBRA','CONDOR','FALCON','IGUANA','PYTHON','WALRUS'
     ],
     hidden: [
       { word: 'WILD',   story: "\"Tell me, what is it you plan to do with your one wild and precious life?\" — Mary Oliver, The Summer Day" },
@@ -32,7 +34,9 @@ const THEMES = {
       'COAST','CONCH','CORAL','DRIFT','FLOAT','FROTH','INLET','JETTY','ROCKS','SHELL',
       'SHOAL','SHORE','SPRAY','SWELL','TIDAL','TOWEL','ANCHOR','BIKINI','BREEZE','BUCKET',
       'DINGHY','LAGOON','LIMPET','MUSSEL','PEBBLE','RIPPLE','SANDAL','SHRIMP','SPLASH','SUNTAN',
-      'URCHIN','WHELKS'
+      'URCHIN','WHELKS',
+      'TERN','POOL','MAST','HULL','PORT','CREST','CREEK','DELTA','FJORD','PRAWN',
+      'SKIFF','TRAWL','MARSH','WRACK','GRAVEL','GROTTO','HARBOR','OYSTER'
     ],
     hidden: [
       { word: 'BRINE',  story: "The ocean is about 3.5 percent salt — but that ratio varies. The Dead Sea is nearly ten times saltier, dense enough that human bodies float without effort. The word salary comes from the Latin sal, because Roman soldiers were sometimes paid in salt or given an allowance to buy it. Salt has been currency, preservative, and medicine for most of human history. At the cellular level, it is still what we are made of." },
@@ -53,7 +57,14 @@ const THEMES = {
       'AXIS','DARK','DAWN','DUST','FLUX','HALO','HAZE','LOOP','MASS','MOON',
       'NOVA','RING','VOID','WAVE','ZONE','COMET','FLARE','ORBIT','PHASE','PROBE',
       'PULSE','QUARK','REALM','SOLAR','SPARK','DEBRIS','HELIUM','IMPACT','ZENITH','PHOTON',
-      'NEBULA','METEOR','PULSAR','CORONA','AURORA','QUASAR'
+      'NEBULA','METEOR','SIRIUS','CORONA','AURORA','QUASAR',
+      'APEX','BELT','BURN','COMA','CORE','DISK','GLOW','IONS','LYRA','MARE',
+      'MARS','MIST','NODE','STAR','TAIL','VEGA','ALGOL','ATLAS','CERES','DENEB',
+      'ERUPT','FIELD','FROST','GAMMA','HIGGS','INNER','LOCAL','OCEAN','OUTER','PLANE',
+      'PLUTO','RADIO','ROCKY','SPACE','STAGE','STORM','TERRA','UMBRA','VENUS','VISTA',
+      'ALBEDO','ALTAIR','APOGEE','BOLIDE','CASTOR','CRATER','CYGNUS','GALAXY','HELIOS','JOVIAN',
+      'KEPLER','MAGNET','MOLTEN','OBJECT','PHOBOS','RADIAL','SATURN','SHIELD','SPHERE','SPIRAL',
+      'TAURUS','THRUST','VACUUM','PROTON'
     ],
     hidden: [
       { word: 'VAST',    story: "\"Space is big. You just won't believe how vastly, hugely, mind-bogglingly big it is.\" — Douglas Adams, The Hitchhiker's Guide to the Galaxy" },
@@ -86,7 +97,11 @@ const THEMES = {
       'BEET','BRIE','CAKE','DILL','FETA','KALE','LEEK','LIME','MINT','MISO',
       'OATS','PLUM','ROUX','SAGE','TARO','BASIL','CHIVE','CLOVE','CUMIN','FENNEL',
       'HONEY','LEMON','OLIVE','THYME','CAPERS','GARLIC','GINGER','MILLET','NUTMEG','PEPPER',
-      'RADISH','SORREL','SUMAC','WALNUT','ENDIVE','ANISE'
+      'RADISH','SORREL','SUMAC','WALNUT','ENDIVE','ANISE',
+      'BEAN','CORN','HERB','NORI','OKRA','ORZO','RICE','TOFU','SUET','YOLK',
+      'APPLE','BREAD','BROTH','CIDER','COCOA','CREAM','FARRO','FLOUR','GUAVA','MAPLE',
+      'PASTA','PEACH','SPELT','SYRUP','ALMOND','BARLEY','BUTTER','CARROT','CASHEW',
+      'CHERRY','FONDUE','PAPAYA','POTATO','QUINCE'
     ],
     hidden: [
       { word: 'RIPE',    story: "In 2013, a Japanese farmer named Zentsuji Imamura began growing watermelons inside cubic molds, producing perfect square fruit that stacked easily and fit in refrigerators. They became luxury items selling for $100 each. The problem: to stay square, they had to be harvested before they were ripe. They were decorative objects. You couldn't eat them. Japan continued buying them anyway." },
@@ -97,12 +112,70 @@ const THEMES = {
       { word: 'SAVOR',   story: "\"One cannot think well, love well, sleep well, if one has not dined well.\" — Virginia Woolf, A Room of One's Own" },
       { word: 'SIMMER',  story: "French mother sauces — béchamel, velouté, espagnole, sauce tomat, hollandaise — underpin virtually all of classical Western cooking. Auguste Escoffier codified them in the early 1900s. Every cream sauce, gravy, and cheese sauce you have ever eaten traces its lineage to one of five recipes written by a man who ran hotel kitchens in London and Paris over a century ago." },
       { word: 'SEASON',  story: "In 1908, Japanese chemist Kikunae Ikeda was eating a bowl of dashi broth when he noticed it had a distinct savory quality that wasn't sweet, sour, salty, or bitter. He spent months isolating the compound responsible — glutamate — and named the taste umami, meaning \"pleasant savory taste.\" He then patented the process for producing it commercially. That product was MSG." },
-      { word: 'HARVEST', story: "\"You can't just eat good food. You've got to talk about it too. And you've got to talk about it to somebody who understands that kind of food.\" — Kurt Vonnegut, Jailbird" },
+      { word: 'RELISH',  story: "\"You can't just eat good food. You've got to talk about it too. And you've got to talk about it to somebody who understands that kind of food.\" — Kurt Vonnegut, Jailbird" },
       { word: 'KNEAD',   story: "Kneading develops gluten — the protein network that gives bread its structure and chew. But bakers have known for centuries that over-kneaded dough becomes tough and unforgiving. The skill is not in the effort but in knowing when to stop. Every experienced baker describes the moment the dough is ready the same way: it feels alive under your hands." }
     ]
   },
 
-  // ── The Arcane ───────────────────────────────────────────────────────────────
+  // ── Hobbies ──────────────────────────────────────────────────────────────────
+
+  beekeeping: {
+    words: [
+      'COMB','EGGS','FEED','FLOW','GRUB','HIVE','JARS','MEAD','MITE','MOTH',
+      'PUPA','SEAL','SKEP','SUIT','VEIL','WASP','WING','YARD','SPUN','VENT',
+      'BLOOM','BROOD','CASTE','DANCE','DRONE','FRAME','GLEAN','GUARD','HONEY','LARVA',
+      'NURSE','PETAL','QUEEN','RESIN','ROYAL','SCOUT','SMOKE','STING','STORE','SWARM',
+      'SWEET','THYME','WATER','YIELD','CLEAN','APIARY','COLONY','DEARTH','FEEDER','FLIGHT',
+      'FORAGE','GARDEN','GLANDS','GLOVES','HIVING','LINDEN','MEADOW','NECTAR','POLLEN','REMEDY',
+      'SMOKER','STRAIN','SUPERS','WAGGLE','WORKER','CAPPED','LAYING','ROBBER','STRIPE','YELLOW'
+    ],
+    hidden: [
+      { word: 'AMBER',  story: "The oldest confirmed bee fossil was found preserved in amber dating to approximately 100 million years ago. Amber is fossilized tree resin; insects that landed in fresh resin were sometimes engulfed and preserved in extraordinary detail — wings, hairs, and pollen baskets intact. Bee fossils in amber have shown that bees were already carrying pollen 65 million years ago, before the extinction of the dinosaurs, while the continents still occupied different positions and the planet held animals we have never seen alive." },
+      { word: 'BUMBLE', story: "For decades a widely repeated story held that bumblebees shouldn't be able to fly — that aerodynamic calculations showed their wings were too small for their body mass. The story appeared in popular science books as evidence of nature defying theory. It was never true. The calculation was based on fixed-wing aircraft models that didn't account for the flapping, rotating motion of insect wings. In 2005, Michael Dickinson at the University of Washington used high-speed cameras to show exactly how bumblebees fly. The story persists because it is useful: it reassures people that expertise has limits. It is not, however, accurate." },
+      { word: 'DRIFT',  story: "Bee drift occurs when foraging or returning bees accidentally enter the wrong hive. It happens most often when hives are arranged in long identical rows — bees navigate by landmark and position, and symmetric arrangements confuse them. Guard bees typically accept drifted workers; drones drift extensively and are accepted by any colony. The problem is that drift spreads disease and parasites between hives. Commercial beekeepers have learned to paint hives different colors and stagger their positions to reduce it. The bees that drift are not lost. They simply live, and work, and die for the wrong queen." },
+      { word: 'FERAL',  story: "When managed colonies escape or are abandoned, they revert quickly. Feral honeybee colonies nest in hollow trees, wall cavities, and rock crevices and can survive for years without human management. In areas where varroa mite has been present for decades, some feral populations have developed behavioral resistance — grooming mites off one another, removing infested brood. Researchers studying colonies in Gotland, Sweden and the Arnot Forest in New York have found that feral bees, selected by survival rather than by beekeepers, are slowly developing traits that managed bees have been shielded from developing. The bees nobody cares for are learning to care for themselves." },
+      { word: 'MASON',  story: "Of the approximately 20,000 known bee species, fewer than ten are honeybees. The vast majority are solitary: they form no colonies, produce no honey worth harvesting, and live in nests of their own making — mud chambers in hollow stems, holes in wood, tunnels in soil. A female mason bee builds a series of cells, provisions each with a ball of pollen and nectar, lays a single egg, and seals the cell with mud. She raises no young she will ever see. The entire honeybee model — the hive, the queen, the collective — is the exception in bee biology. Solitude is the rule." },
+      { word: 'PRIME',  story: "When a honeybee colony becomes crowded, workers begin raising new queens in enlarged cells. The old queen — sometimes reduced in weight through restricted feeding so she can fly — leaves with roughly half the colony. This is a prime swarm: the first and largest of the season, containing the original queen. It clusters on a branch while scouts search for a suitable cavity. The decision-making process has been studied in detail: scouts perform waggle dances advertising their discovered sites, and the colony reaches consensus through a mechanism mathematically analogous to voting. The swarm departs only when enough scouts agree." },
+      { word: 'QUIET',  story: "'The keeping of bees is like the direction of sunbeams.' — Henry David Thoreau, from his journals, 1857. Thoreau kept bees briefly at Walden and wrote about them throughout his journals. He was struck by the way bees worked without apparent instruction, by the organized silence of a healthy hive, and by the strangeness of an animal that makes food and stores it for a future it cannot predict." },
+      { word: 'STRAY',  story: "'Float like a butterfly, sting like a bee.' — Muhammad Ali, 1964. The line was composed by Ali's corner man, Drew 'Bundini' Brown, before the Sonny Liston fight. Ali adopted it as his own and made it the most famous single sentence ever written about boxing. It is also accurate natural history: honeybees can sting only once before they die, while bumblebees and wasps sting repeatedly. Ali fought Liston twice. He won both times." },
+      { word: 'TOXIC',  story: "Several common garden plants produce nectar and pollen that are toxic to humans when concentrated in honey. Rhododendron, azalea, and mountain laurel all contain grayanotoxins; honey made primarily from their nectar is called mad honey and causes dizziness, nausea, and in large doses, dangerous drops in heart rate. It has been used medicinally and as an intoxicant since antiquity. Xenophon's soldiers in 401 BC ate honey from rhododendron-heavy meadows in Anatolia and became so incapacitated they nearly lost a battle. The bees that made it were unaffected. Grayanotoxins do not harm them. Only the things that eat their work." },
+      { word: 'UNITE',  story: "Combining two weak colonies into one stronger one — called uniting — is among the oldest management techniques in beekeeping. The challenge is that bees from different colonies will fight and kill each other if introduced abruptly. The newspaper method solves this by placing a sheet of newspaper between the two boxes: by the time the bees chew through it, their scents have mingled and they accept each other as hive-mates. The technique has been used for at least a century. The precise mechanism by which bees distinguish nest-mates from strangers is still being studied." }
+    ]
+  },
+
+  knitting: {
+    words: [
+      'BALL','BIND','CAST','COIL','DARN','DROP','FELT','HOOK','KNIT','LACE',
+      'LOOP','PURL','REEL','SLIP','SOCK','SPIN','WOOL','YARN','HANK','TUCK',
+      'LOOM','CABLE','COLOR','CRAFT','DRAPE','FIBER','GAUGE','GLOVE','GRAFT','LINEN',
+      'MODAL','MOTIF','PLAIT','PLIED','POINT','ROUND','SCARF','SHAWL','SKEIN','STASH',
+      'STOLE','SWIFT','TWIST','TWEED','WOVEN','ALPACA','ANGORA','BOBBIN','BUTTON','COLLAR',
+      'COTTON','CREWEL','DESIGN','EYELET','FELTED','FINGER','FLEECE','FRINGE','JERSEY','MERINO',
+      'MOHAIR','NEEDLE','RIBBED','RIBBON','SLEEVE','STITCH','SWATCH','TARTAN','TANGLE','THREAD'
+    ],
+    hidden: [
+      { word: 'FROG',   story: "In knitting, to 'frog' means to pull out stitches and unravel your work — usually to fix a mistake discovered rows or hours later. The name comes from the ribbit sound frogs make, which knitters heard as rip it, rip it. The term appears to have emerged in online knitting communities in the late 1990s. Skilled knitters can read their knitting row by row, which is essential to knowing how far back to frog. A single dropped stitch found ten rows later can mean unraveling hundreds of stitches to correct one." },
+      { word: 'MEND',   story: "The Japanese tradition of boro — meaning rags — produced textiles repaired with visible stitching across generations. Cloth was too valuable to discard; when a garment wore through, it was patched and repatched until the fabric became a record of its own repair history. Boro pieces, once associated with poverty, now appear in museum collections and sell at auction. In 2008, the British artist Tom of Holland coined the phrase 'visible mending' — treating repair as something to display rather than conceal. What changed across centuries is not the tools. It is that using them became a choice." },
+      { word: 'PLAIN',  story: "'Knitting is nothing but knit and purl — only knit and purl — but from those two stitches you can make the whole world.' — Kaffe Fassett, Glorious Knitting, 1985. Fassett grew up in California, moved to England in his twenties, and taught himself to knit on a train journey. He went on to design some of the most celebrated colorwork knitwear of the 20th century. His work is in the permanent collection of the Victoria and Albert Museum." },
+      { word: 'RAVEL',  story: "The word ravel means both to tangle and to untangle — it contains its own opposite. Linguists call these autoantonyms. Ravelry, the social platform for knitters and crocheters launched in 2007, named itself after that duality. By 2024 it had over ten million registered users and hosted patterns for more than a million projects. Members have catalogued yarn stashes, documented project histories, and recorded works-in-progress with such thoroughness that Ravelry is considered one of the largest craft databases ever assembled. Its founders built the first version in four months." },
+      { word: 'MAKER',  story: "In 16th-century Europe, knitting was a trade organized by guilds. Apprenticeships lasted six years. To become a guild master, a knitter had to complete a thirteen-week masterwork without assistance: a felted cap, a pair of stockings, a short shirt, and a carpet. Hand-knitted silk stockings were luxury goods — Queen Elizabeth I reportedly refused woven cloth hose after trying knitted silk. In 1589 she denied William Lee a patent for his knitting frame, reportedly concerned about hand-knitters losing work. The machine won eventually. The guild system collapsed within two centuries." },
+      { word: 'PEACE',  story: "'Properly practiced, knitting soothes the troubled spirit, and it doesn't hurt the untroubled spirit either.' — Elizabeth Zimmermann, Knitting Without Tears, 1971. Zimmermann was born in England, trained in Germany, and emigrated to Wisconsin, where she ran a mail-order knitting supply business from her home. She is credited with reviving knitting-in-the-round in the English-speaking world and restoring knitting as a creative practice rather than a rote set of instructions." },
+      { word: 'PATCH',  story: "For most of human history, textiles were expensive enough that repair was economically essential. The darning mushroom — a wooden dome used to hold a sock taut while mending — was standard household equipment for centuries. Reknitted heels, patched elbows, and mended stockings were not signs of poverty; they were signs of good management. By the mid-20th century, synthetic fabrics made replacement cheaper than repair, and the skills quietly disappeared. Today those same techniques are sold as craft kits. The tools are unchanged. What changed is that using them became optional." },
+      { word: 'UNWIND', story: "Research published in the British Journal of Occupational Therapy found that 81 percent of knitters with depression reported feeling happier after knitting. Studies at Harvard Medical School confirmed that repetitive hand movements trigger the relaxation response — the same neurological state produced by meditation. The rhythm of needles, the counting of stitches, and the tactile quality of yarn engage attention in a way that crowds out anxious thought. The psychologist Betsan Corkhill coined the phrase 'therapeutic knitting' in 2009 and documented its use in managing chronic pain, grief, and post-traumatic stress. The research describes what knitters had been reporting for centuries." },
+      { word: 'KNACK',  story: "'You don't knit because you need a sweater. You need a sweater because you knit.' — Stephanie Pearl-McPhee, widely attributed to her blog Yarn Harlot, which she has written since 2004. Pearl-McPhee's books have introduced millions of readers to knitting through humor and personal essays — and through the observation that knitters are not primarily making objects. They are making time: transforming idle hours into something tangible and warm." },
+      { word: 'WEAVE',  story: "The Jacquard loom, invented by Joseph Marie Jacquard in 1804, used a chain of punched cards to control which threads were raised in a weave — making complex patterns reproducible automatically. Charles Babbage saw one and applied the same principle to his proposed computing engine. Ada Lovelace, often called the first computer programmer, used the Jacquard loom as her central metaphor, writing that Babbage's machine 'weaves algebraic patterns just as the Jacquard loom weaves flowers and leaves.' Every line of code written today descends, in a meaningful sense, from a loom." },
+      { word: 'ARAN',   story: "Aran sweaters — heavily cabled knitwear from the Aran Islands off the west coast of Ireland — have been sold for decades with a persistent legend: that each island family knitted a unique pattern into their sweaters so drowned fishermen could be identified when their bodies washed ashore. Folklorists have found no historical evidence for this story. The cabled Aran sweater as a tradition was largely developed in the 1930s and 1940s, partly through the influence of a government weaving board trying to create export goods. The legend was probably invented by a tourism brochure. It spread because it was irresistible." },
+      { word: 'SEAM',   story: "The Kitchener stitch — used to join the live stitches of a sock toe without a visible seam — was reportedly named after Lord Kitchener of the British Army during World War I, who is said to have instructed soldiers' families to use a seamless grafting method. The story's accuracy is disputed; the technique predates the attribution. But the name stuck. Kitchener is better known as the face on the 'Your Country Needs You' recruitment poster. It is mildly peculiar that his other legacy is a very small, very invisible, very peaceful join in the toe of a sock." },
+      { word: 'WALE',   story: "A wale is a column of loops running vertically in a knitted fabric — the equivalent of a warp thread in weaving. Counting wales per inch, alongside rows per inch, gives you your stitch gauge. The word shares a root with weal, meaning a ridge, and appears in corduroy to describe those raised cords. In knitting, the ratio of row gauge to stitch gauge determines whether a circle knits up as a circle or an oval. Most beginners discover this only by knitting a circle and watching it become an egg." },
+      { word: 'BRAID',  story: "Stranded colorwork — knitting with two or more colors across a row — produces a fabric with two layers of yarn: the pattern on the face and the unused color carried across the back. How loosely or tightly a knitter carries those floats determines whether the finished piece stretches or puckers. Scandinavian traditions developed Fair Isle, Icelandic lopapeysa, and Norwegian lusekoftes over generations. The patterns that look decorative were originally functional: they trapped air, added insulation, and identified their wearers' home regions in a world without other forms of identification." },
+      { word: 'CRIMP',  story: "The crimp in wool fiber — its natural waviness — is what allows it to trap air and insulate. The tighter the crimp, the finer the fiber, the softer it feels, and the more loft the spun yarn will have. Merino sheep produce fiber with up to one hundred crimps per inch. Fibers without crimp — linen, cotton — are cooler precisely because they do not trap air. When a wool garment is described as warm, it is describing a physical property of the crimp, not a quality of the fiber itself. The warmth was built into the sheep." },
+      { word: 'DRAFT',  story: "'The distaff is the fate of women.' — traditional German proverb, recorded since at least the 17th century. Before industrialization, spinning was daily essential labor for most women in the world. The Moirai of Greek mythology spin, measure, and cut the thread of life; the Norse Norns weave fate at Yggdrasil's roots; the Hindu goddess Kali holds a thread that binds the universe. The word spinster meant simply a woman who spins. Its second meaning arrived later, once the first had become optional." },
+      { word: 'SHEAR',  story: "A skilled shearer can remove a sheep's fleece in a single continuous piece in under two minutes without nicking the skin. The world record for hand shearing is 731 sheep in nine hours, set by New Zealander Rodney Sutton in 2016. Shearing season follows a rhythm unchanged for centuries. The raw fleece contains lanolin — a waxy grease extracted by the wool industry for use in cosmetics and pharmaceuticals. What the shearer takes in two minutes becomes, over many months and many hands, a garment. The distance between the animal and the finished object is one of the longer journeys a material makes." },
+      { word: 'STEEK',  story: "A steek is a column of extra stitches added to the edge of a stranded colorwork tube — stitches that will later be cut away to open armholes, necklines, or the front of a cardigan. Cutting into finished knitting seems alarming; the entire art is built around not dropping stitches. But steeks are ancient and practical. Scandinavian and Shetland knitters used them for centuries because working in the round is faster and more even than working flat. You knit the tube, reinforce the edges, cut the tube, fold and sew. The finished object looks as though it was never cut at all." },
+      { word: 'BOBBLE', story: "Stitches like cables, seed stitch, and bobbles are often described as decorative — patterns added to plain fabric for visual interest. But in cold-climate knitting they were structural innovations first. Cables add thickness and trap more air. Seed stitch creates a nubbled surface with higher loft than stockinette. Bobbles concentrate extra material at elbows, shoulders, and cuffs — the points where thickness helps most. What survived into the 21st century as aesthetic preference was originally engineered. The ornamental is, in most cases, a memory of the functional." },
+      { word: 'SHRINK', story: "Wool felts when wet because the individual fibers are covered in microscopic scales that, under heat and agitation, lock together irreversibly. This is the same property that makes wool warm — the scales trap air — but it becomes a liability in a hot wash. The felt hat, the felt boot liner, and the boiled wool jacket are all made by deliberately exploiting this behavior. Machine-washable wool has been chemically treated to flatten or coat the scales. It will not felt. It will also never bloom and soften the way untreated wool does after years of wear." }
+    ]
+  },
 
   tarot: {
     words: [
@@ -111,7 +184,9 @@ const THEMES = {
       'FLAME','GRACE','GUIDE','KARMA','LIGHT','MAJOR','MINOR','QUEEN','RIDER','SIGHT',
       'STAVE','TAROT','TOWER','TRUTH','VERSE','WORLD','ARCANA','ASTRAL','AUGURY','CANDLE',
       'CELTIC','DIVINE','HERMIT','LOVERS','MIRROR','MYSTIC','ORACLE','PILLAR','SACRED','SEEKER',
-      'SHADOW','THRONE'
+      'SHADOW','THRONE',
+      'CORD','FIRE','LUNA','PAST','RITE','ROBE','ALTAR','ANGEL','CHANT','CLOTH',
+      'DEATH','SIGIL','WHEEL','WANDS','CIPHER','EMBLEM','SHROUD','SPHINX'
     ],
     hidden: [
       { word: 'CHANCE', story: "Tarot cards were not designed for fortune-telling. The earliest surviving decks — created in 15th-century Milan — were luxury playing cards used for a trick-taking game called Tarocchi. The association with divination emerged two centuries later, primarily through 18th-century French occultists who imposed symbolic systems onto the existing imagery. Antoine Court de Gébelin, writing in 1781, claimed the cards encoded ancient Egyptian wisdom. Egypt was fashionable; his claim was invented wholesale. The fortune-telling tradition built itself on a foundation of enthusiastic fiction." },
@@ -136,7 +211,9 @@ const THEMES = {
       'COVEN','CURSE','DRUID','DWARF','FAIRY','FIEND','GNOME','GOLEM','GUILD','NYMPH',
       'PIXIE','QUEST','REALM','RELIC','SPELL','STAFF','SWORD','WITCH','AMULET','ARCANE',
       'CASTLE','DAGGER','DRAGON','GOBLIN','KNIGHT','MANTLE','PORTAL','POTION','RITUAL','SCROLL',
-      'WIZARD','WRAITH'
+      'WIZARD','WRAITH',
+      'BANE','DIRE','MIST','OATH','ADEPT','BEAST','CLOAK','EMBER','FORGE','GLYPH',
+      'LANCE','VALOR','ARCHER','BANISH','HERALD','LEGEND','SHRINE','UNDEAD'
     ],
     hidden: [
       { word: 'TROPE',  story: "Joseph Campbell's The Hero with a Thousand Faces, published in 1949, identified the same story structure — departure, initiation, return — across hundreds of myths from cultures with no contact with one another. He called it the monomyth. George Lucas has credited it as the direct blueprint for Star Wars. Campbell never watched the film. He died in 1987 believing mythology was a living thing, not a source of material." },
@@ -159,7 +236,9 @@ const THEMES = {
       'CYBER','DELTA','DROID','DRONE','LASER','LUNAR','NEXUS','PILOT','RADAR','ROBOT',
       'ROVER','SPAWN','SYNTH','TITAN','VIRAL','XENON','BEACON','BINARY','COLONY','CYBORG',
       'ENERGY','EXODUS','GENOME','HAZARD','MATRIX','MODULE','MUTANT','NEURAL','PLASMA','SECTOR',
-      'SENSOR','STASIS'
+      'SENSOR','STASIS',
+      'DATA','FUEL','HIVE','TECH','ALLOY','DECAY','DRIVE','GAMMA','HELIX','LOGIC',
+      'MORPH','QUBIT','BUNKER','CARBON','FUSION','HANGAR','HYBRID','REBOOT'
     ],
     hidden: [
       { word: 'AXIOM',  story: "Isaac Asimov introduced the Three Laws of Robotics in his 1942 story \"Runaround\" — laws so self-evident he called them axioms, designed to make robots inherently safe. He then spent the next forty years writing stories about edge cases where they failed: a robot that interprets \"harm\" too broadly, or too narrowly, or ranks competing duties in catastrophically the wrong order. The laws were not a solution. They were a thought experiment that happened to look like one." },

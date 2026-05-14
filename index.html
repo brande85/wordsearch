@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Word Search</title>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;700&family=Nunito:wght@400;500;700&family=Quicksand:wght@400;500;700&family=Exo+2:wght@400;500;700&family=Fredoka:wght@400;500;700&family=Cinzel:wght@400;500;700&family=Cormorant+Garamond:wght@400;500;700&family=Rajdhani:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;700&family=Nunito:wght@400;500;700&family=Quicksand:wght@400;500;700&family=Exo+2:wght@400;500;700&family=Fredoka:wght@400;500;700&family=Cinzel:wght@400;500;700&family=Cormorant+Garamond:wght@400;500;700&family=Rajdhani:wght@400;500;700&family=Josefin+Sans:wght@400;500;700&family=Lora:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
     :root{
@@ -15,9 +15,9 @@
       --gold:#d4a847;--gold-light:#f5e9c8;--gold-dark:#8a6a1e;
     }
     body{font-family:'Caveat',cursive;background:#2a2a2a;display:flex;justify-content:center;padding:1rem;min-height:100vh}
-    #backdrop{display:none;position:fixed;inset:0;z-index:2;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0.17;pointer-events:none}
+    #backdrop{display:none;position:absolute;top:0;left:0;width:100%;aspect-ratio:9/16;z-index:3;background-size:cover;background-position:top center;background-repeat:no-repeat;opacity:0.4;pointer-events:none}
     #backdrop.visible{display:block}
-    #app{max-width:480px;width:100%;padding:1rem;background:var(--cream);border-radius:16px;border:1px solid var(--cream3);height:fit-content}
+    #app{max-width:480px;width:100%;padding:1rem;background:var(--cream);border-radius:16px;border:1px solid var(--cream3);height:fit-content;position:relative;overflow:hidden}
     h1{font-size:26px;font-weight:700;color:var(--ink);margin-bottom:2px}
     .sub{font-size:15px;color:var(--ink2);font-style:italic;margin-bottom:1rem}
     .controls{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:0.75rem}
@@ -127,6 +127,8 @@
     body.skin-tarot{--skin-font:'Cinzel',serif}
     body.skin-fantasy{--skin-font:'Cormorant Garamond',serif}
     body.skin-scifi{--skin-font:'Rajdhani',sans-serif}
+    body.skin-knitting{--skin-font:'Josefin Sans',sans-serif}
+    body.skin-beekeeping{--skin-font:'Lora',serif}
     body.skin-animals{background:#0f1f0a;font-family:'Nunito',sans-serif;--cream:#f2f7ed;--cream2:#e4ede0;--cream3:#bccfb4;--ink:#1b3019;--ink2:#3d5c38;--ink3:#7a9e72;--sage:#5c8c55;--sage-light:#c0d9b8;--sage-dark:#2b5c25;--terra:#c47c30;--terra-light:#f0dbb8;--terra-dark:#7a4a10;--gold:#b8860b;--gold-light:#f5e8a0;--gold-dark:#6b4800}
     body.skin-animals button,body.skin-animals select{background:#1a4018 !important;font-family:'Nunito',sans-serif !important}
     body.skin-animals button:hover,body.skin-animals select:hover{background:#2a6028 !important}
@@ -162,11 +164,21 @@
     body.skin-scifi button:hover,body.skin-scifi select:hover{background:#182838 !important}
     body.skin-scifi button.btn-active{background:#003870 !important}
     body.skin-scifi h1,body.skin-scifi .sub,body.skin-scifi .cell,body.skin-scifi .found-tag,body.skin-scifi .complete-title,body.skin-scifi .complete-body,body.skin-scifi .word-blanks,body.skin-scifi .word-strike,body.skin-scifi .word-revealed,body.skin-scifi .story-text,body.skin-scifi .story-num,body.skin-scifi .hint-line,body.skin-scifi .message,body.skin-scifi .wl-header span,body.skin-scifi .found-panel h3{font-family:'Rajdhani',sans-serif !important}
+    body.skin-knitting{background:#2a1808;font-family:'Josefin Sans',sans-serif;--cream:#fdf8f2;--cream2:#f5ece0;--cream3:#dcc8b0;--ink:#1e1008;--ink2:#4e2e12;--ink3:#8a6440;--sage:#9a6878;--sage-light:#e8d0d8;--sage-dark:#5a2838;--terra:#b85030;--terra-light:#f8d0b8;--terra-dark:#781808;--gold:#c08018;--gold-light:#fce0a8;--gold-dark:#784800}
+    body.skin-knitting button,body.skin-knitting select{background:#3a1808 !important;font-family:'Josefin Sans',sans-serif !important}
+    body.skin-knitting button:hover,body.skin-knitting select:hover{background:#521c08 !important}
+    body.skin-knitting button.btn-active{background:#5a2838 !important}
+    body.skin-knitting h1,body.skin-knitting .sub,body.skin-knitting .cell,body.skin-knitting .found-tag,body.skin-knitting .complete-title,body.skin-knitting .complete-body,body.skin-knitting .word-blanks,body.skin-knitting .word-strike,body.skin-knitting .word-revealed,body.skin-knitting .story-text,body.skin-knitting .story-num,body.skin-knitting .hint-line,body.skin-knitting .message,body.skin-knitting .wl-header span,body.skin-knitting .found-panel h3{font-family:'Josefin Sans',sans-serif !important}
+    body.skin-beekeeping{background:#1a1000;font-family:'Lora',serif;--cream:#fef8e0;--cream2:#faf0c0;--cream3:#e0c870;--ink:#1a1000;--ink2:#4a3000;--ink3:#8a5800;--sage:#5a7a30;--sage-light:#d0e8a0;--sage-dark:#2a4a08;--terra:#c05010;--terra-light:#f8d0a0;--terra-dark:#781808;--gold:#d09010;--gold-light:#fce8a0;--gold-dark:#784800}
+    body.skin-beekeeping button,body.skin-beekeeping select{background:#3a2000 !important;font-family:'Lora',serif !important}
+    body.skin-beekeeping button:hover,body.skin-beekeeping select:hover{background:#503000 !important}
+    body.skin-beekeeping button.btn-active{background:#2a4a08 !important}
+    body.skin-beekeeping h1,body.skin-beekeeping .sub,body.skin-beekeeping .cell,body.skin-beekeeping .found-tag,body.skin-beekeeping .complete-title,body.skin-beekeeping .complete-body,body.skin-beekeeping .word-blanks,body.skin-beekeeping .word-strike,body.skin-beekeeping .word-revealed,body.skin-beekeeping .story-text,body.skin-beekeeping .story-num,body.skin-beekeeping .hint-line,body.skin-beekeeping .message,body.skin-beekeeping .wl-header span,body.skin-beekeeping .found-panel h3{font-family:'Lora',serif !important}
   </style>
 </head>
 <body>
-<div id="backdrop"></div>
 <div id="app">
+<div id="backdrop"></div>
   <h1>Word Search</h1>
   <p class=”sub”>Find everything &mdash; then keep looking...</p>
   <div class="controls">
@@ -180,7 +192,9 @@
       <optgroup label="Life &amp; Culture">
         <option value="food">Food</option>
       </optgroup>
-      <optgroup label="The Arcane">
+      <optgroup label="Hobbies">
+        <option value="beekeeping">Beekeeping</option>
+        <option value="knitting">Knitting</option>
         <option value="tarot">Tarot</option>
       </optgroup>
       <optgroup label="Fiction">
@@ -254,12 +268,12 @@ const MAX_LEN = 6;
 const WORDS_PER_SIZE = {10: 10, 12: 15, 15: 20};
 const DIRS = [[0,1],[1,0],[0,-1],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]];
 const STORAGE_KEY = 'wordsearch_v1';
-const GOLD_THEMES = ['space'];
+const GOLD_THEMES = ['space', 'knitting'];
 const SILVER_THRESHOLD = 10;
 const GOLD_THRESHOLD = 20;
 const THEME_NAMES = {
   animals: 'Animals', beach: 'Beach', space: 'Space',
-  food: 'Food', tarot: 'Tarot', fantasy: 'Fantasy', scifi: 'Science Fiction'
+  food: 'Food', tarot: 'Tarot', knitting: 'Knitting', beekeeping: 'Beekeeping', fantasy: 'Fantasy', scifi: 'Science Fiction'
 };
 const SKINS = {
   default: {
@@ -317,6 +331,20 @@ const SKINS = {
     theme: 'scifi',
     font: "'Rajdhani', sans-serif",
     swatches: ['#1a2838', '#f0f4f8', '#0070b0', '#c08000'],
+  },
+  knitting: {
+    name: 'Woolcraft',
+    description: 'Knitting theme — find all 10 fragments to unlock',
+    theme: 'knitting',
+    font: "'Josefin Sans', sans-serif",
+    swatches: ['#2a1808', '#fdf8f2', '#9a6878', '#c08018'],
+  },
+  beekeeping: {
+    name: 'Apiary',
+    description: 'Beekeeping theme — find all 10 fragments to unlock',
+    theme: 'beekeeping',
+    font: "'Lora', serif",
+    swatches: ['#1a1000', '#fef8e0', '#5a7a30', '#d09010'],
   },
 };
 
@@ -711,8 +739,10 @@ function checkCompletion() {
 function isSkinUnlocked(skinId) {
   const skin = SKINS[skinId];
   if (!skin.theme) return true;
-  const total = THEMES[skin.theme].hidden.filter(h => h.word.length >= MIN_LEN && h.word.length <= MAX_LEN).length;
-  return (state.foundHiddenCount[skin.theme] || 0) >= total;
+  const threshold = GOLD_THEMES.includes(skin.theme)
+    ? SILVER_THRESHOLD
+    : THEMES[skin.theme].hidden.filter(h => h.word.length >= MIN_LEN && h.word.length <= MAX_LEN).length;
+  return (state.foundHiddenCount[skin.theme] || 0) >= threshold;
 }
 
 function applyBackdrop() {
