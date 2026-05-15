@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Word Search</title>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;700&family=Nunito:wght@400;500;700&family=Quicksand:wght@400;500;700&family=Exo+2:wght@400;500;700&family=Fredoka:wght@400;500;700&family=Cinzel:wght@400;500;700&family=Cormorant+Garamond:wght@400;500;700&family=Rajdhani:wght@400;500;700&family=Josefin+Sans:wght@400;500;700&family=Lora:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;700&family=Nunito:wght@400;500;700&family=Quicksand:wght@400;500;700&family=Exo+2:wght@400;500;700&family=Fredoka:wght@400;500;700&family=Cinzel:wght@400;500;700&family=Cormorant+Garamond:wght@400;500;700&family=Rajdhani:wght@400;500;700&family=Josefin+Sans:wght@400;500;700&family=Lora:wght@400;500;700&family=EB+Garamond:wght@400;500;700&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
     :root{
@@ -129,6 +129,8 @@
     body.skin-scifi{--skin-font:'Rajdhani',sans-serif}
     body.skin-knitting{--skin-font:'Josefin Sans',sans-serif}
     body.skin-beekeeping{--skin-font:'Lora',serif}
+    body.skin-fungi{--skin-font:'EB Garamond',serif}
+    body.skin-geology{--skin-font:'Libre Baskerville',serif}
     body.skin-animals{background:#0f1f0a;font-family:'Nunito',sans-serif;--cream:#f2f7ed;--cream2:#e4ede0;--cream3:#bccfb4;--ink:#1b3019;--ink2:#3d5c38;--ink3:#7a9e72;--sage:#5c8c55;--sage-light:#c0d9b8;--sage-dark:#2b5c25;--terra:#c47c30;--terra-light:#f0dbb8;--terra-dark:#7a4a10;--gold:#b8860b;--gold-light:#f5e8a0;--gold-dark:#6b4800}
     body.skin-animals button,body.skin-animals select{background:#1a4018 !important;font-family:'Nunito',sans-serif !important}
     body.skin-animals button:hover,body.skin-animals select:hover{background:#2a6028 !important}
@@ -174,6 +176,16 @@
     body.skin-beekeeping button:hover,body.skin-beekeeping select:hover{background:#503000 !important}
     body.skin-beekeeping button.btn-active{background:#2a4a08 !important}
     body.skin-beekeeping h1,body.skin-beekeeping .sub,body.skin-beekeeping .cell,body.skin-beekeeping .found-tag,body.skin-beekeeping .complete-title,body.skin-beekeeping .complete-body,body.skin-beekeeping .word-blanks,body.skin-beekeeping .word-strike,body.skin-beekeeping .word-revealed,body.skin-beekeeping .story-text,body.skin-beekeeping .story-num,body.skin-beekeeping .hint-line,body.skin-beekeeping .message,body.skin-beekeeping .wl-header span,body.skin-beekeeping .found-panel h3{font-family:'Lora',serif !important}
+    body.skin-fungi{background:#0f1208;font-family:'EB Garamond',serif;--cream:#f5f0e0;--cream2:#ebe4cc;--cream3:#c8b890;--ink:#1a1505;--ink2:#3a2d0a;--ink3:#6a5220;--sage:#7a9040;--sage-light:#d8e8a0;--sage-dark:#3a5008;--terra:#c06820;--terra-light:#f8d8a0;--terra-dark:#783008;--gold:#b89010;--gold-light:#fce8a0;--gold-dark:#684800}
+    body.skin-fungi button,body.skin-fungi select{background:#1c2610 !important;font-family:'EB Garamond',serif !important}
+    body.skin-fungi button:hover,body.skin-fungi select:hover{background:#2c3a18 !important}
+    body.skin-fungi button.btn-active{background:#3a5008 !important}
+    body.skin-fungi h1,body.skin-fungi .sub,body.skin-fungi .cell,body.skin-fungi .found-tag,body.skin-fungi .complete-title,body.skin-fungi .complete-body,body.skin-fungi .word-blanks,body.skin-fungi .word-strike,body.skin-fungi .word-revealed,body.skin-fungi .story-text,body.skin-fungi .story-num,body.skin-fungi .hint-line,body.skin-fungi .message,body.skin-fungi .wl-header span,body.skin-fungi .found-panel h3{font-family:'EB Garamond',serif !important}
+    body.skin-geology{background:#1a1815;font-family:'Libre Baskerville',serif;--cream:#f0ece0;--cream2:#e5e0d0;--cream3:#c8bfa8;--ink:#1a1510;--ink2:#3a2e1e;--ink3:#6a5a42;--sage:#6a7880;--sage-light:#c0ccd8;--sage-dark:#303848;--terra:#c07840;--terra-light:#f0d8b0;--terra-dark:#784020;--gold:#b08030;--gold-light:#f0e0a0;--gold-dark:#684810}
+    body.skin-geology button,body.skin-geology select{background:#2a2018 !important;font-family:'Libre Baskerville',serif !important}
+    body.skin-geology button:hover,body.skin-geology select:hover{background:#3a3028 !important}
+    body.skin-geology button.btn-active{background:#303848 !important}
+    body.skin-geology h1,body.skin-geology .sub,body.skin-geology .cell,body.skin-geology .found-tag,body.skin-geology .complete-title,body.skin-geology .complete-body,body.skin-geology .word-blanks,body.skin-geology .word-strike,body.skin-geology .word-revealed,body.skin-geology .story-text,body.skin-geology .story-num,body.skin-geology .hint-line,body.skin-geology .message,body.skin-geology .wl-header span,body.skin-geology .found-panel h3{font-family:'Libre Baskerville',serif !important}
   </style>
 </head>
 <body>
@@ -187,6 +199,8 @@
       <optgroup label="Nature &amp; Places">
         <option value="animals">Animals</option>
         <option value="beach">Beach</option>
+        <option value="fungi">Fungi</option>
+        <option value="geology">Geology</option>
         <option value="space">Space</option>
       </optgroup>
       <optgroup label="Life &amp; Culture">
@@ -272,7 +286,7 @@ const GOLD_THEMES = ['space', 'knitting'];
 const SILVER_THRESHOLD = 10;
 const GOLD_THRESHOLD = 20;
 const THEME_NAMES = {
-  animals: 'Animals', beach: 'Beach', space: 'Space',
+  animals: 'Animals', beach: 'Beach', fungi: 'Fungi', geology: 'Geology', space: 'Space',
   food: 'Food', tarot: 'Tarot', knitting: 'Knitting', beekeeping: 'Beekeeping', fantasy: 'Fantasy', scifi: 'Science Fiction'
 };
 const SKINS = {
@@ -345,6 +359,20 @@ const SKINS = {
     theme: 'beekeeping',
     font: "'Lora', serif",
     swatches: ['#1a1000', '#fef8e0', '#5a7a30', '#d09010'],
+  },
+  fungi: {
+    name: 'Mycelium',
+    description: 'Fungi theme — find all 10 fragments to unlock',
+    theme: 'fungi',
+    font: "'EB Garamond', serif",
+    swatches: ['#0f1208', '#f5f0e0', '#7a9040', '#b89010'],
+  },
+  geology: {
+    name: 'Bedrock',
+    description: 'Geology theme — find all 10 fragments to unlock',
+    theme: 'geology',
+    font: "'Libre Baskerville', serif",
+    swatches: ['#1a1815', '#f0ece0', '#6a7880', '#b08030'],
   },
 };
 
