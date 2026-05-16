@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Word Search</title>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;700&family=Nunito:wght@400;500;700&family=Quicksand:wght@400;500;700&family=Exo+2:wght@400;500;700&family=Fredoka:wght@400;500;700&family=Cinzel:wght@400;500;700&family=Cormorant+Garamond:wght@400;500;700&family=Rajdhani:wght@400;500;700&family=Josefin+Sans:wght@400;500;700&family=Lora:wght@400;500;700&family=EB+Garamond:wght@400;500;700&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;700&family=Nunito:wght@400;500;700&family=Quicksand:wght@400;500;700&family=Exo+2:wght@400;500;700&family=Fredoka:wght@400;500;700&family=Cinzel:wght@400;500;700&family=Cormorant+Garamond:wght@400;500;700&family=Rajdhani:wght@400;500;700&family=Josefin+Sans:wght@400;500;700&family=Lora:wght@400;500;700&family=EB+Garamond:wght@400;500;700&family=Libre+Baskerville:wght@400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
     :root{
@@ -131,6 +131,15 @@
     body.skin-beekeeping{--skin-font:'Lora',serif}
     body.skin-fungi{--skin-font:'EB Garamond',serif}
     body.skin-geology{--skin-font:'Libre Baskerville',serif}
+    body.skin-mythology{--skin-font:'Playfair Display',serif}
+    body.skin-astrology{--skin-font:'Cinzel',serif}
+    body.skin-classical{--skin-font:'Cormorant Garamond',serif}
+    body.skin-weather{--skin-font:'Nunito',sans-serif}
+    body.skin-theater{--skin-font:'Playfair Display',serif}
+    body.skin-fairytales{--skin-font:'Lora',serif}
+    body.skin-dinosaurs{--skin-font:'Nunito',sans-serif}
+    body.skin-archaeology{--skin-font:'Libre Baskerville',serif}
+    body.skin-chess{--skin-font:'Cinzel',serif}
     body.skin-animals{background:#0f1f0a;font-family:'Nunito',sans-serif;--cream:#f2f7ed;--cream2:#e4ede0;--cream3:#bccfb4;--ink:#1b3019;--ink2:#3d5c38;--ink3:#7a9e72;--sage:#5c8c55;--sage-light:#c0d9b8;--sage-dark:#2b5c25;--terra:#c47c30;--terra-light:#f0dbb8;--terra-dark:#7a4a10;--gold:#b8860b;--gold-light:#f5e8a0;--gold-dark:#6b4800}
     body.skin-animals button,body.skin-animals select{background:#1a4018 !important;font-family:'Nunito',sans-serif !important}
     body.skin-animals button:hover,body.skin-animals select:hover{background:#2a6028 !important}
@@ -186,6 +195,51 @@
     body.skin-geology button:hover,body.skin-geology select:hover{background:#3a3028 !important}
     body.skin-geology button.btn-active{background:#303848 !important}
     body.skin-geology h1,body.skin-geology .sub,body.skin-geology .cell,body.skin-geology .found-tag,body.skin-geology .complete-title,body.skin-geology .complete-body,body.skin-geology .word-blanks,body.skin-geology .word-strike,body.skin-geology .word-revealed,body.skin-geology .story-text,body.skin-geology .story-num,body.skin-geology .hint-line,body.skin-geology .message,body.skin-geology .wl-header span,body.skin-geology .found-panel h3{font-family:'Libre Baskerville',serif !important}
+    body.skin-mythology{background:#0c1525;font-family:'Playfair Display',serif;--cream:#f8f0dc;--cream2:#f0e4c4;--cream3:#d8c898;--ink:#0c0e18;--ink2:#1c2440;--ink3:#3c4870;--sage:#4870b8;--sage-light:#b8d0f0;--sage-dark:#182850;--terra:#c89040;--terra-light:#f8e8a0;--terra-dark:#786020;--gold:#c0a030;--gold-light:#f8e890;--gold-dark:#705810}
+    body.skin-mythology button,body.skin-mythology select{background:#182038 !important;font-family:'Playfair Display',serif !important}
+    body.skin-mythology button:hover,body.skin-mythology select:hover{background:#283050 !important}
+    body.skin-mythology button.btn-active{background:#182850 !important}
+    body.skin-mythology h1,body.skin-mythology .sub,body.skin-mythology .cell,body.skin-mythology .found-tag,body.skin-mythology .complete-title,body.skin-mythology .complete-body,body.skin-mythology .word-blanks,body.skin-mythology .word-strike,body.skin-mythology .word-revealed,body.skin-mythology .story-text,body.skin-mythology .story-num,body.skin-mythology .hint-line,body.skin-mythology .message,body.skin-mythology .wl-header span,body.skin-mythology .found-panel h3{font-family:'Playfair Display',serif !important}
+    body.skin-astrology{background:#0a0a18;font-family:'Cinzel',serif;--cream:#f0e8f8;--cream2:#e0d0f0;--cream3:#b8a0d8;--ink:#0a0818;--ink2:#18143a;--ink3:#382858;--sage:#8060c0;--sage-light:#d0b0f8;--sage-dark:#301848;--terra:#c080a0;--terra-light:#f8d0e8;--terra-dark:#783050;--gold:#c0a040;--gold-light:#f8e890;--gold-dark:#685010}
+    body.skin-astrology button,body.skin-astrology select{background:#18143a !important;font-family:'Cinzel',serif !important}
+    body.skin-astrology button:hover,body.skin-astrology select:hover{background:#28205a !important}
+    body.skin-astrology button.btn-active{background:#301848 !important}
+    body.skin-astrology h1,body.skin-astrology .sub,body.skin-astrology .cell,body.skin-astrology .found-tag,body.skin-astrology .complete-title,body.skin-astrology .complete-body,body.skin-astrology .word-blanks,body.skin-astrology .word-strike,body.skin-astrology .word-revealed,body.skin-astrology .story-text,body.skin-astrology .story-num,body.skin-astrology .hint-line,body.skin-astrology .message,body.skin-astrology .wl-header span,body.skin-astrology .found-panel h3{font-family:'Cinzel',serif !important}
+    body.skin-classical{background:#150a0a;font-family:'Cormorant Garamond',serif;--cream:#faf5e8;--cream2:#f0e8d0;--cream3:#d8c8a0;--ink:#120808;--ink2:#2a1010;--ink3:#5a2020;--sage:#8b3030;--sage-light:#f0b0b0;--sage-dark:#3a0808;--terra:#c87830;--terra-light:#f8e0a8;--terra-dark:#784808;--gold:#b89828;--gold-light:#f8e890;--gold-dark:#685010}
+    body.skin-classical button,body.skin-classical select{background:#2a1010 !important;font-family:'Cormorant Garamond',serif !important}
+    body.skin-classical button:hover,body.skin-classical select:hover{background:#3a1818 !important}
+    body.skin-classical button.btn-active{background:#3a0808 !important}
+    body.skin-classical h1,body.skin-classical .sub,body.skin-classical .cell,body.skin-classical .found-tag,body.skin-classical .complete-title,body.skin-classical .complete-body,body.skin-classical .word-blanks,body.skin-classical .word-strike,body.skin-classical .word-revealed,body.skin-classical .story-text,body.skin-classical .story-num,body.skin-classical .hint-line,body.skin-classical .message,body.skin-classical .wl-header span,body.skin-classical .found-panel h3{font-family:'Cormorant Garamond',serif !important}
+    body.skin-weather{background:#0e1a28;font-family:'Nunito',sans-serif;--cream:#e8f2fc;--cream2:#d8eaf8;--cream3:#a8c8e8;--ink:#0a1220;--ink2:#152040;--ink3:#284870;--sage:#2868b0;--sage-light:#90c8f0;--sage-dark:#0a3060;--terra:#c09030;--terra-light:#f8e890;--terra-dark:#705010;--gold:#a0b020;--gold-light:#e8f090;--gold-dark:#586010}
+    body.skin-weather button,body.skin-weather select{background:#0a1c40 !important;font-family:'Nunito',sans-serif !important}
+    body.skin-weather button:hover,body.skin-weather select:hover{background:#142858 !important}
+    body.skin-weather button.btn-active{background:#0a3060 !important}
+    body.skin-weather h1,body.skin-weather .sub,body.skin-weather .cell,body.skin-weather .found-tag,body.skin-weather .complete-title,body.skin-weather .complete-body,body.skin-weather .word-blanks,body.skin-weather .word-strike,body.skin-weather .word-revealed,body.skin-weather .story-text,body.skin-weather .story-num,body.skin-weather .hint-line,body.skin-weather .message,body.skin-weather .wl-header span,body.skin-weather .found-panel h3{font-family:'Nunito',sans-serif !important}
+    body.skin-theater{background:#1a0010;font-family:'Playfair Display',serif;--cream:#fdf4e8;--cream2:#f5e8cc;--cream3:#d4b898;--ink:#140008;--ink2:#381028;--ink3:#683858;--sage:#9a1860;--sage-light:#f0a0c0;--sage-dark:#44082a;--terra:#c08018;--terra-light:#f8e498;--terra-dark:#684c08;--gold:#d4a020;--gold-light:#fce890;--gold-dark:#785008}
+    body.skin-theater button,body.skin-theater select{background:#2a0818 !important;font-family:'Playfair Display',serif !important}
+    body.skin-theater button:hover,body.skin-theater select:hover{background:#3e1028 !important}
+    body.skin-theater button.btn-active{background:#44082a !important}
+    body.skin-theater h1,body.skin-theater .sub,body.skin-theater .cell,body.skin-theater .found-tag,body.skin-theater .complete-title,body.skin-theater .complete-body,body.skin-theater .word-blanks,body.skin-theater .word-strike,body.skin-theater .word-revealed,body.skin-theater .story-text,body.skin-theater .story-num,body.skin-theater .hint-line,body.skin-theater .message,body.skin-theater .wl-header span,body.skin-theater .found-panel h3{font-family:'Playfair Display',serif !important}
+    body.skin-fairytales{background:#1a0c08;font-family:'Lora',serif;--cream:#fef5e0;--cream2:#f8e8c8;--cream3:#e0c898;--ink:#180c08;--ink2:#3a2010;--ink3:#6a4028;--sage:#9a4820;--sage-light:#f0c898;--sage-dark:#4a1808;--terra:#c03820;--terra-light:#f8c0a8;--terra-dark:#781808;--gold:#b89020;--gold-light:#f8e888;--gold-dark:#685008}
+    body.skin-fairytales button,body.skin-fairytales select{background:#2c1008 !important;font-family:'Lora',serif !important}
+    body.skin-fairytales button:hover,body.skin-fairytales select:hover{background:#401808 !important}
+    body.skin-fairytales button.btn-active{background:#4a1808 !important}
+    body.skin-fairytales h1,body.skin-fairytales .sub,body.skin-fairytales .cell,body.skin-fairytales .found-tag,body.skin-fairytales .complete-title,body.skin-fairytales .complete-body,body.skin-fairytales .word-blanks,body.skin-fairytales .word-strike,body.skin-fairytales .word-revealed,body.skin-fairytales .story-text,body.skin-fairytales .story-num,body.skin-fairytales .hint-line,body.skin-fairytales .message,body.skin-fairytales .wl-header span,body.skin-fairytales .found-panel h3{font-family:'Lora',serif !important}
+    body.skin-dinosaurs{background:#1c0a06;font-family:'Nunito',sans-serif;--cream:#faf0e0;--cream2:#f0e0c8;--cream3:#d8c0a0;--ink:#180806;--ink2:#3c1c0c;--ink3:#6c3c1c;--sage:#b05020;--sage-light:#f0b880;--sage-dark:#581808;--terra:#c08018;--terra-light:#f8e088;--terra-dark:#7a4c08;--gold:#a0a010;--gold-light:#f0e880;--gold-dark:#585008}
+    body.skin-dinosaurs button,body.skin-dinosaurs select{background:#2c1008 !important;font-family:'Nunito',sans-serif !important}
+    body.skin-dinosaurs button:hover,body.skin-dinosaurs select:hover{background:#401808 !important}
+    body.skin-dinosaurs button.btn-active{background:#581808 !important}
+    body.skin-dinosaurs h1,body.skin-dinosaurs .sub,body.skin-dinosaurs .cell,body.skin-dinosaurs .found-tag,body.skin-dinosaurs .complete-title,body.skin-dinosaurs .complete-body,body.skin-dinosaurs .word-blanks,body.skin-dinosaurs .word-strike,body.skin-dinosaurs .word-revealed,body.skin-dinosaurs .story-text,body.skin-dinosaurs .story-num,body.skin-dinosaurs .hint-line,body.skin-dinosaurs .message,body.skin-dinosaurs .wl-header span,body.skin-dinosaurs .found-panel h3{font-family:'Nunito',sans-serif !important}
+    body.skin-archaeology{background:#18130a;font-family:'Libre Baskerville',serif;--cream:#faf5e0;--cream2:#f0e8c8;--cream3:#d8c898;--ink:#160e04;--ink2:#3a2c10;--ink3:#6a5828;--sage:#8a7040;--sage-light:#e8d8a0;--sage-dark:#4a3c10;--terra:#c06820;--terra-light:#f8d8a0;--terra-dark:#7a3c08;--gold:#c0a020;--gold-light:#f8e890;--gold-dark:#684c08}
+    body.skin-archaeology button,body.skin-archaeology select{background:#2c1c08 !important;font-family:'Libre Baskerville',serif !important}
+    body.skin-archaeology button:hover,body.skin-archaeology select:hover{background:#3e2810 !important}
+    body.skin-archaeology button.btn-active{background:#4a3c10 !important}
+    body.skin-archaeology h1,body.skin-archaeology .sub,body.skin-archaeology .cell,body.skin-archaeology .found-tag,body.skin-archaeology .complete-title,body.skin-archaeology .complete-body,body.skin-archaeology .word-blanks,body.skin-archaeology .word-strike,body.skin-archaeology .word-revealed,body.skin-archaeology .story-text,body.skin-archaeology .story-num,body.skin-archaeology .hint-line,body.skin-archaeology .message,body.skin-archaeology .wl-header span,body.skin-archaeology .found-panel h3{font-family:'Libre Baskerville',serif !important}
+    body.skin-chess{background:#0a1008;font-family:'Cinzel',serif;--cream:#f8f5e0;--cream2:#eee8c8;--cream3:#ccc098;--ink:#080a06;--ink2:#203010;--ink3:#406030;--sage:#3a7020;--sage-light:#b8d898;--sage-dark:#1a4010;--terra:#a08040;--terra-light:#e8d098;--terra-dark:#584810;--gold:#c0a030;--gold-light:#f8e890;--gold-dark:#684808}
+    body.skin-chess button,body.skin-chess select{background:#142010 !important;font-family:'Cinzel',serif !important}
+    body.skin-chess button:hover,body.skin-chess select:hover{background:#203018 !important}
+    body.skin-chess button.btn-active{background:#1a4010 !important}
+    body.skin-chess h1,body.skin-chess .sub,body.skin-chess .cell,body.skin-chess .found-tag,body.skin-chess .complete-title,body.skin-chess .complete-body,body.skin-chess .word-blanks,body.skin-chess .word-strike,body.skin-chess .word-revealed,body.skin-chess .story-text,body.skin-chess .story-num,body.skin-chess .hint-line,body.skin-chess .message,body.skin-chess .wl-header span,body.skin-chess .found-panel h3{font-family:'Cinzel',serif !important}
   </style>
 </head>
 <body>
@@ -199,19 +253,28 @@
       <optgroup label="Nature &amp; Places">
         <option value="animals">Animals</option>
         <option value="beach">Beach</option>
+        <option value="dinosaurs">Dinosaurs</option>
         <option value="fungi">Fungi</option>
         <option value="geology">Geology</option>
         <option value="space">Space</option>
+        <option value="weather">Weather</option>
       </optgroup>
       <optgroup label="Life &amp; Culture">
+        <option value="archaeology">Archaeology</option>
+        <option value="classical">Classical Music</option>
         <option value="food">Food</option>
+        <option value="mythology">Mythology</option>
+        <option value="theater">Theater</option>
       </optgroup>
       <optgroup label="Hobbies">
+        <option value="astrology">Astrology</option>
         <option value="beekeeping">Beekeeping</option>
+        <option value="chess">Chess</option>
         <option value="knitting">Knitting</option>
         <option value="tarot">Tarot</option>
       </optgroup>
       <optgroup label="Fiction">
+        <option value="fairytales">Fairy Tales</option>
         <option value="fantasy">Fantasy</option>
         <option value="scifi">Science Fiction</option>
       </optgroup>
@@ -286,8 +349,8 @@ const GOLD_THEMES = ['space', 'knitting'];
 const SILVER_THRESHOLD = 10;
 const GOLD_THRESHOLD = 20;
 const THEME_NAMES = {
-  animals: 'Animals', beach: 'Beach', fungi: 'Fungi', geology: 'Geology', space: 'Space',
-  food: 'Food', tarot: 'Tarot', knitting: 'Knitting', beekeeping: 'Beekeeping', fantasy: 'Fantasy', scifi: 'Science Fiction'
+  animals: 'Animals', beach: 'Beach', dinosaurs: 'Dinosaurs', fungi: 'Fungi', geology: 'Geology', space: 'Space', weather: 'Weather',
+  archaeology: 'Archaeology', classical: 'Classical Music', food: 'Food', mythology: 'Mythology', theater: 'Theater', astrology: 'Astrology', beekeeping: 'Beekeeping', chess: 'Chess', knitting: 'Knitting', tarot: 'Tarot', fairytales: 'Fairy Tales', fantasy: 'Fantasy', scifi: 'Science Fiction'
 };
 const SKINS = {
   default: {
@@ -373,6 +436,69 @@ const SKINS = {
     theme: 'geology',
     font: "'Libre Baskerville', serif",
     swatches: ['#1a1815', '#f0ece0', '#6a7880', '#b08030'],
+  },
+  mythology: {
+    name: 'Pantheon',
+    description: 'Mythology theme — find all 10 fragments to unlock',
+    theme: 'mythology',
+    font: "'Playfair Display', serif",
+    swatches: ['#0c1525', '#f8f0dc', '#4870b8', '#c0a030'],
+  },
+  astrology: {
+    name: 'Celestial',
+    description: 'Astrology theme — find all 10 fragments to unlock',
+    theme: 'astrology',
+    font: "'Cinzel', serif",
+    swatches: ['#0a0a18', '#f0e8f8', '#8060c0', '#c0a040'],
+  },
+  archaeology: {
+    name: 'Antiquity',
+    description: 'Archaeology theme — find all 10 fragments to unlock',
+    theme: 'archaeology',
+    font: "'Libre Baskerville', serif",
+    swatches: ['#18130a', '#faf5e0', '#8a7040', '#c0a020'],
+  },
+  chess: {
+    name: 'Grandmaster',
+    description: 'Chess theme — find all 10 fragments to unlock',
+    theme: 'chess',
+    font: "'Cinzel', serif",
+    swatches: ['#0a1008', '#f8f5e0', '#3a7020', '#c0a030'],
+  },
+  classical: {
+    name: 'Bravura',
+    description: 'Classical Music theme — find all 10 fragments to unlock',
+    theme: 'classical',
+    font: "'Cormorant Garamond', serif",
+    swatches: ['#150a0a', '#faf5e8', '#8b3030', '#b89828'],
+  },
+  weather: {
+    name: 'Tempest',
+    description: 'Weather theme — find all 10 fragments to unlock',
+    theme: 'weather',
+    font: "'Nunito', sans-serif",
+    swatches: ['#0e1a28', '#e8f2fc', '#2868b0', '#c09030'],
+  },
+  theater: {
+    name: 'Marquee',
+    description: 'Theater theme — find all 10 fragments to unlock',
+    theme: 'theater',
+    font: "'Playfair Display', serif",
+    swatches: ['#1a0010', '#fdf4e8', '#9a1860', '#c08018'],
+  },
+  fairytales: {
+    name: 'Storybook',
+    description: 'Fairy Tales theme — find all 10 fragments to unlock',
+    theme: 'fairytales',
+    font: "'Lora', serif",
+    swatches: ['#1a0c08', '#fef5e0', '#9a4820', '#b89020'],
+  },
+  dinosaurs: {
+    name: 'Badlands',
+    description: 'Dinosaurs theme — find all 10 fragments to unlock',
+    theme: 'dinosaurs',
+    font: "'Nunito', sans-serif",
+    swatches: ['#1c0a06', '#faf0e0', '#b05020', '#c08018'],
   },
 };
 
