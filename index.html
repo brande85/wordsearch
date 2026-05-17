@@ -15,7 +15,7 @@
       --gold:#d4a847;--gold-light:#f5e9c8;--gold-dark:#8a6a1e;
     }
     body{font-family:'Caveat',cursive;background:#2a2a2a;display:flex;justify-content:center;padding:1rem;min-height:100vh}
-    #backdrop{display:none;position:absolute;top:0;left:0;width:100%;aspect-ratio:9/16;z-index:3;background-size:cover;background-position:top center;background-repeat:no-repeat;opacity:0.4;pointer-events:none}
+    #backdrop{display:none;position:absolute;top:0;left:0;width:100%;aspect-ratio:9/16;z-index:3;background-size:cover;background-position:top center;background-repeat:no-repeat;opacity:0.75;pointer-events:none}
     #backdrop.visible{display:block}
     #app{max-width:480px;width:100%;padding:1rem;background:var(--cream);border-radius:16px;border:1px solid var(--cream3);height:fit-content;position:relative;overflow:hidden}
     h1{font-size:26px;font-weight:700;color:var(--ink);margin-bottom:2px}
@@ -72,6 +72,26 @@
     .found-tag.is-list{background:var(--sage-light);color:var(--sage-dark);border-color:transparent}
     .found-tag.is-bonus{background:var(--terra-light);color:var(--terra-dark);border-color:transparent}
     .found-tag.is-hidden{background:var(--gold-light);color:var(--gold-dark);border-color:transparent;font-weight:700}
+    .found-tag.is-hint{background:var(--sage-light);color:var(--sage-dark);border-color:transparent;font-weight:700}
+    .splash-overlay{position:fixed;inset:0;z-index:200;background:var(--cream);display:flex;flex-direction:column;align-items:center;padding:2rem 1.5rem}
+    .splash-overlay.hidden{display:none}
+    .splash-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:0.75rem;width:100%;max-width:480px}
+    .splash-title{font-size:44px;font-weight:700;color:var(--ink);font-family:var(--skin-font);margin:0;line-height:1.15}
+    .splash-sub{font-size:16px;color:var(--ink2);font-style:italic;font-family:var(--skin-font);margin:0}
+    .splash-foot{width:100%;max-width:480px;padding-bottom:0.5rem;display:flex;flex-direction:column;gap:8px}
+    .splash-foot button{width:100%}
+    #splash-btn{font-size:18px !important;padding:10px 20px !important}
+    .settings-overlay{display:none;position:fixed;inset:0;background:rgba(42,42,42,0.82);z-index:300;align-items:center;justify-content:center;padding:1rem}
+    .settings-overlay.visible{display:flex}
+    .settings-card{background:var(--cream);border-radius:16px;border:1px solid var(--cream3);padding:1.5rem;max-width:320px;width:100%}
+    .settings-title{font-size:20px;font-weight:700;color:var(--ink);margin-bottom:1rem}
+    .settings-row{margin-bottom:0.5rem}
+    .settings-row button{width:100%}
+    .settings-warning{font-size:15px;color:var(--terra-dark);font-style:italic;margin-bottom:1rem;line-height:1.4}
+    .settings-confirm-btns{display:flex;gap:8px;margin-bottom:0.75rem}
+    .settings-confirm-btns button{flex:1}
+    .settings-divider{border:none;border-top:1px solid var(--cream3);margin:1rem 0}
+    .settings-close-row button{width:100%}
     .found-tag.is-checking{opacity:0.5;font-style:italic}
     .message{font-size:16px;color:var(--terra-dark);min-height:20px;font-style:italic;text-align:center;padding:0.25rem 0}
     .story-card{background:var(--gold-light);border:1px solid var(--gold);border-radius:12px;padding:0.875rem;margin-bottom:0.75rem;display:none}
@@ -244,10 +264,18 @@
 </head>
 <body>
 <div id="app">
+<div id="splash" class="splash-overlay">
+  <div class="splash-body">
+    <h1 class="splash-title">Wordsearch</h1>
+    <p class="splash-sub">Find everything &mdash; then keep looking...</p>
+  </div>
+  <div class="splash-foot">
+    <button id="splash-btn">New Puzzle</button>
+    <button id="splash-settings-btn">Settings</button>
+  </div>
+</div>
 <div id="backdrop"></div>
-  <h1>Word Search</h1>
-  <p class=”sub”>Find everything &mdash; then keep looking...</p>
-  <div class="controls">
+  <div class=”controls”>
     <label>Theme:</label>
     <select id="theme-sel">
       <optgroup label="Nature &amp; Places">
@@ -333,6 +361,28 @@
     </div>
     <div class="skin-sheet-footer">
       <button id="skin-close-btn">Close</button>
+    </div>
+  </div>
+</div>
+
+<div id="settings-modal" class="settings-overlay" role="dialog" aria-modal="true">
+  <div class="settings-card">
+    <p class="settings-title">Settings</p>
+    <div id="settings-main">
+      <div class="settings-row">
+        <button id="reset-btn">Reset Progress</button>
+      </div>
+    </div>
+    <div id="settings-confirm" hidden>
+      <p class="settings-warning">Are you sure you want to delete your progress?</p>
+      <div class="settings-confirm-btns">
+        <button id="reset-confirm-btn">Yes, reset</button>
+        <button id="reset-cancel-btn">Cancel</button>
+      </div>
+    </div>
+    <hr class="settings-divider">
+    <div class="settings-close-row">
+      <button id="settings-close-btn">Close</button>
     </div>
   </div>
 </div>
@@ -580,7 +630,7 @@ function placeWord(grid, word, placed) {
 function buildGrid(size, words, hidden) {
   const grid = Array.from({ length: size }, () => Array(size).fill('.'));
   const placed = [];
-  for (const w of [...words, hidden]) placeWord(grid, w, placed);
+  for (const w of [...words, hidden, 'HINT']) placeWord(grid, w, placed);
   const L = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   for (let r = 0; r < size; r++)
     for (let c = 0; c < size; c++)
@@ -610,13 +660,13 @@ function newPuzzle() {
     for (let attempt = 0; attempt < 5; attempt++) {
       const result = buildGrid(size, candidates, hiddenEntry.word);
       const placedWords = new Set(result.placed.map(p => p.word));
-      if (candidates.every(w => placedWords.has(w)) && placedWords.has(hiddenEntry.word)) {
+      if (candidates.every(w => placedWords.has(w)) && placedWords.has(hiddenEntry.word) && placedWords.has('HINT')) {
         grid = result.grid; placed = result.placed; break outer;
       }
     }
   }
-  const placedList = placed.filter(p => p.word !== hiddenEntry.word);
-  const actualPlaced = [...placedList, ...placed.filter(p => p.word === hiddenEntry.word)];
+  const placedList = placed.filter(p => p.word !== hiddenEntry.word && p.word !== 'HINT');
+  const actualPlaced = [...placedList, ...placed.filter(p => p.word === hiddenEntry.word || p.word === 'HINT')];
   const actualWords = placedList.map(p => p.word).sort();
   state = {
     ...state, grid, size, words: actualWords,
@@ -677,12 +727,16 @@ async function commitSelection() {
         document.getElementById('story-text').textContent = state.hiddenStory;
         document.getElementById('story-card').classList.add('visible');
         document.getElementById('message').textContent = '✨ You found the hidden word!';
+      } else if (match.word === 'HINT' && !state.found.has(state.hidden)) {
+        const w = state.hidden;
+        const hintText = w[0] + ' ' + Array(w.length - 1).fill('_').join(' ');
+        document.getElementById('message').textContent = '💡 ' + hintText;
       }
     }
     state.selecting = []; render(); saveToStorage();
     if (newlyFound) {
-      if (match.word !== state.hidden) checkCompletion();
-      else if (state.words.every(w => state.found.has(w))) showCompletion(creditHiddenIfEarned());
+      if (match.word !== state.hidden && match.word !== 'HINT') checkCompletion();
+      else if (match.word === state.hidden && state.words.every(w => state.found.has(w))) showCompletion(creditHiddenIfEarned());
     }
   } else {
     const candidate = word.length >= wordRev.length ? word : wordRev;
@@ -804,6 +858,7 @@ function renderFound() {
   for (const w of state.found) {
     const t = document.createElement('span');
     if (w === state.hidden) { t.className = 'found-tag is-hidden'; t.textContent = '✨ ' + w; }
+    else if (w === 'HINT') { t.className = 'found-tag is-hint'; t.textContent = '💡 HINT'; }
     else { t.className = 'found-tag is-list'; t.textContent = w; }
     fl.appendChild(t); any = true;
   }
@@ -1012,7 +1067,23 @@ document.getElementById('diag-toggle').addEventListener('click', () => {
 document.getElementById('theme-sel').addEventListener('change', newPuzzle);
 document.getElementById('size-sel').addEventListener('change', newPuzzle);
 document.addEventListener('mouseup', () => { if (state.dragging) { state.dragging = false; commitSelection(); } });
-window.addEventListener('resize', () => renderGrid());
+
+let _size15 = null;
+function updateSizeOptions() {
+  const sel = document.getElementById('size-sel');
+  if (window.innerWidth < 500) {
+    const opt = sel.querySelector('option[value="15"]');
+    if (opt) {
+      if (sel.value === '15') { sel.value = '12'; newPuzzle(); }
+      _size15 = sel.removeChild(opt);
+    }
+  } else if (_size15) {
+    sel.appendChild(_size15);
+    _size15 = null;
+  }
+}
+
+window.addEventListener('resize', () => { renderGrid(); updateSizeOptions(); });
 document.getElementById('skin-btn').addEventListener('click', () => {
   renderSkinPicker();
   document.getElementById('skin-modal').classList.add('visible');
@@ -1024,11 +1095,40 @@ document.getElementById('skin-btn').addEventListener('click', () => {
 document.getElementById('skin-close-btn').addEventListener('click', () => {
   document.getElementById('skin-modal').classList.remove('visible');
 });
+document.getElementById('splash-btn').addEventListener('click', () => {
+  document.getElementById('splash').classList.add('hidden');
+  newPuzzle();
+});
+document.getElementById('splash-settings-btn').addEventListener('click', () => {
+  document.getElementById('settings-main').removeAttribute('hidden');
+  document.getElementById('settings-confirm').setAttribute('hidden', '');
+  document.getElementById('settings-modal').classList.add('visible');
+});
+document.getElementById('settings-close-btn').addEventListener('click', () => {
+  document.getElementById('settings-modal').classList.remove('visible');
+});
+document.getElementById('reset-btn').addEventListener('click', () => {
+  document.getElementById('settings-main').setAttribute('hidden', '');
+  document.getElementById('settings-confirm').removeAttribute('hidden');
+});
+document.getElementById('reset-cancel-btn').addEventListener('click', () => {
+  document.getElementById('settings-main').removeAttribute('hidden');
+  document.getElementById('settings-confirm').setAttribute('hidden', '');
+});
+document.getElementById('reset-confirm-btn').addEventListener('click', () => {
+  state.usedHidden = {};
+  state.foundHiddenCount = {};
+  state.goldUnlocked = {};
+  state.backdropActive = {};
+  saveToStorage();
+  updateDropdownStars();
+  document.getElementById('settings-modal').classList.remove('visible');
+});
 
 // ── Init ──────────────────────────────────────────────────────────
 loadFromStorage();
 applySkin(state.activeSkin);
-newPuzzle();
+updateSizeOptions();
 updateDropdownStars();
 </script>
 </body>
